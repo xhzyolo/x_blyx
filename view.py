@@ -9,7 +9,7 @@ from tkinter import messagebox
 from model import Model
 
 
-VERSION = "0.2"
+VERSION = "0.3"
 BASE_URL = "https://xzdwz.com/api/blyx/blyx"
 
 
@@ -299,7 +299,6 @@ class App:
             hours, rem = divmod(time.time() - self.start_time, 3600)
             minutes, seconds = divmod(rem, 60)
             self.label_timer.config(text=f"已运行：{int(hours):02}:{int(minutes):02}:{int(seconds):02}", fg="green")
-            self.log_text("测试")
             self.root.after(1000, self.start_timer)
 
     def start_action(self):

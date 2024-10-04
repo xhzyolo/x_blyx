@@ -106,21 +106,15 @@ class Model:
 
     def run_cards(self):
         """主线程"""
-        try:
-            # print("开始执行")
-            self.ctrl = controller.Controller(self.__gethwnd(), self.__ajreg())
-            if not self.ctrl.find_pic("images/zmui1.png", 0.9):
-                self.log_text("请进入招募界面再启动程序", "error")
+        # print("开始执行")
+        self.ctrl = controller.Controller(self.__gethwnd(), self.__ajreg())
+        if not self.ctrl.find_pic("images/zmui1.png", 0.9):
+            self.log_text("请进入招募界面再启动程序", "error")
 
-            check = threading.Thread(target=self.run_check_thread, daemon=True)
-            check.start()
+        check = threading.Thread(target=self.run_check_thread, daemon=True)
+        check.start()
 
-            self.run_cards_thread()
-        except Exception as e:
-            # print(e)
-            with open("error.log", "w") as f:
-                f.write(str(e.__class__) + str(e))
-            self.log_text("程序出错", "error")
+        self.run_cards_thread()
 
     def run_check_thread(self):
         """检测线程"""
@@ -149,42 +143,42 @@ class Model:
         # 判断颜色
         count = 0
         while True:
-            if not self.ctrl.find_pic("images/jb100.png", 0.9):
-                # 执行放弃
-                self.log_text("执行放弃")
-                self.ctrl.click(*ZB_FANGQI)
-                time.sleep(0.3)
-                self.ctrl.click(*ZB_QUEREN)
-            # 获取颜色
-            color_list = self.get_color_list()
-            # print(color_list)
-            self.log_text(",".join(color_list))
-            # 获取英雄
-            hero_list = self.get_hero_list(color_list)
-            # print(hero_list)
-            new_hero = [hero for hero in hero_list if hero != "空"]
-            if new_hero:
-                self.log_text("发现英雄：%s" % ",".join(new_hero))
-            # 三倍
-            is3s = self.check_3s(color_list, hero_list)
-            # 招募
-            delay, index = self.zhaomu(hero_list, is3s)
-            if index != -1 and hero_list[index] != "空":
-                self.log_text("获得英雄：%s" % hero_list[index])
-                self.update_res({hero_list[index]: 1})
-            if delay:
-                time.sleep(DELAY_ZHAOMU)
-            count += 1
-            if self.config_data["cards_count"] != "0":
-                if count >= int(self.config_data["cards_count"]):
-                    self.log_text("已招募%s次，程序停止" % count, "error")
-
-        # 判断英雄
-        # 判断是否跳转按钮
-        # 判断是否选完
-        # 结果
-        # 判断是否下一轮
-        # 判断次数
+            try:
+                if not self.ctrl.find_pic("images/jb100.png", 0.9):
+                    # 执行放弃
+                    self.log_text("执行放弃")
+                    self.ctrl.click(*ZB_FANGQI)
+                    time.sleep(0.3)
+                    self.ctrl.click(*ZB_QUEREN)
+                # 获取颜色
+                color_list = self.get_color_list()
+                # print(color_list)
+                self.log_text(",".join(color_list))
+                # 获取英雄
+                hero_list = self.get_hero_list(color_list)
+                # print(hero_list)
+                new_hero = [hero for hero in hero_list if hero != "空"]
+                if new_hero:
+                    self.log_text("发现英雄：%s" % ",".join(new_hero))
+                # 三倍
+                is3s = self.check_3s(hero_list)
+                # 招募
+                delay, index = self.zhaomu(hero_list, is3s)
+                if index != -1 and hero_list[index] != "空":
+                    self.log_text("获得英雄：%s" % hero_list[index])
+                    self.update_res({hero_list[index]: 1})
+                if delay:
+                    time.sleep(DELAY_ZHAOMU)
+                count += 1
+                if self.config_data["cards_count"] != "0":
+                    if count >= int(self.config_data["cards_count"]):
+                        self.log_text("已招募%s次，程序停止" % count, "error")
+            except Exception as e:
+                # print(e)
+                with open("error.log", "a") as f:
+                    f.write(time.strftime("%m-%d %H:%M:%S : ", time.localtime()) + str(e))
+                self.log_text("程序错误，已记录！")
+                continue
 
     def get_color_list(self):
         """获取颜色列表"""
@@ -222,7 +216,7 @@ class Model:
                 self.log_text("发现红色英雄，程序停止", "error")
 
             for key, value in HERO_RED.items():
-                res = self.ctrl.find_pic(value, 0.95, tp=screen_shot)
+                res = self.ctrl.find_pic(value, 0.9, tp=screen_shot)
                 if res:
                     if res[0] < 150 and color_list[0] == "红":
                         hero_list[0] = key
@@ -235,7 +229,7 @@ class Model:
 
         if "金" in color_list:
             for key, value in HERO_GLODEN.items():
-                res = self.ctrl.find_pic(value, 0.95, tp=screen_shot)
+                res = self.ctrl.find_pic(value, 0.9, tp=screen_shot)
                 if res:
                     if res[0] < 150 and color_list[0] == "金":
                         hero_list[0] = key
@@ -248,10 +242,7 @@ class Model:
 
         return hero_list
 
-    def check_3s(self, color_list, hero_list):
-        if "红" in color_list:
-            return True
-
+    def check_3s(self, hero_list):
         for hero in hero_list:
             if hero == "空":
                 continue
