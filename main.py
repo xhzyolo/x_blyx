@@ -3,13 +3,10 @@ import multiprocessing
 from view import App
 
 
-END_TIME = "2099-12-31 23:59:59"
+VERSION = "0.4"
 
 if __name__ == "__main__":
-    try:
-        multiprocessing.freeze_support()
-        root = tk.Tk()
-        app = App(root)
-        root.mainloop()
-    except Exception as e:
-        print(e)
+    multiprocessing.freeze_support()
+    root = tk.Tk()
+    app = App(root, VERSION)
+    root.mainloop()

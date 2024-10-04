@@ -9,18 +9,18 @@ from tkinter import messagebox
 from model import Model
 
 
-VERSION = "0.3"
 BASE_URL = "https://xzdwz.com/api/blyx/blyx"
 
 
 class App:
-    def __init__(self, root):
+    def __init__(self, root, version):
         self.root = root
+        self.version = version
         self.running = False
         self.label_show = {}
         self.label_count = {}
         self.p_cards = None
-        title = f"x-blyx   V: {VERSION}"
+        title = f"x-blyx   V: {self.version}"
         self.__create_window(title, 400, 500)
         self.__create_tabs()
         self.root.iconbitmap(self.get_resource_path("images/blyx.ico"))
@@ -38,12 +38,15 @@ class App:
             if res["errorCode"] == 0:
                 min_version = res["data"]["min_version"]
                 max_version = res["data"]["max_version"]
-                if float(VERSION) >= float(min_version):
-                    if float(VERSION) == float(max_version):
+                if float(self.version) >= float(min_version):
+                    if float(self.version) == float(max_version):
                         self.log_text("当前为最新版本")
                         return
-                    if float(VERSION) < float(max_version):
+                    elif float(self.version) < float(max_version):
                         self.log_text(f"发现新版本,v{max_version}")
+                        return
+                    elif float(self.version) > float(max_version):
+                        self.log_text("当前为测试版本")
                         return
                 else:
                     messagebox.showinfo(title="提示", message="当前版本过低，请更新到最新版本")
@@ -333,7 +336,18 @@ class App:
                 self.p_cards.terminate()
             print("exit")
         time.sleep(0.05)
+        self.release_all()
         self.root.destroy()
+
+    def release_all(self):
+        filename = "error.log"
+        current_directory = os.getcwd()
+        file_path = os.path.join(current_directory, filename)
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                pass
 
     def on_click(self, event):
         """点击事件处理函数"""

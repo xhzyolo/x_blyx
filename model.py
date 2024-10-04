@@ -177,7 +177,6 @@ class Model:
                 # print(e)
                 with open("error.log", "a") as f:
                     f.write(time.strftime("%m-%d %H:%M:%S : ", time.localtime()) + str(e))
-                self.log_text("程序错误，已记录！")
                 continue
 
     def get_color_list(self):
@@ -207,7 +206,7 @@ class Model:
                 if "空" not in color_list:
                     return color_list
 
-    def get_hero_list(self, color_list):
+    def get_hero_list(self, color_list: list):
         """获取英雄列表"""
         hero_list = ["空", "空", "空"]
         screen_shot = self.ctrl.captrure_win32()
@@ -215,31 +214,36 @@ class Model:
             if self.config_data["h_stop"] == "True":
                 self.log_text("发现红色英雄，程序停止", "error")
 
-            for key, value in HERO_RED.items():
-                res = self.ctrl.find_pic(value, 0.9, tp=screen_shot)
-                if res:
-                    if res[0] < 150 and color_list[0] == "红":
-                        hero_list[0] = key
-                        continue
-                    if res[0] < 300 and color_list[1] == "红":
-                        hero_list[1] = key
-                        continue
-                    if res[0] < 450 and color_list[0] == "红":
-                        hero_list[2] = key
+            for _ in range(10):  # 用于多次检测，有10次容错
+                for key, value in HERO_RED.items():
+                    res = self.ctrl.find_pic(value, 0.95, tp=screen_shot)
+                    if res:
+                        if res[0] < 150 and color_list[0] == "红":
+                            hero_list[0] = key
+                            continue
+                        if res[0] < 300 and color_list[1] == "红":
+                            hero_list[1] = key
+                            continue
+                        if res[0] < 450 and color_list[2] == "红":
+                            hero_list[2] = key
+                if color_list.count("红") == 3 - hero_list.count("空"):
+                    break
 
         if "金" in color_list:
-            for key, value in HERO_GLODEN.items():
-                res = self.ctrl.find_pic(value, 0.9, tp=screen_shot)
-                if res:
-                    if res[0] < 150 and color_list[0] == "金":
-                        hero_list[0] = key
-                        continue
-                    if res[0] < 300 and color_list[1] == "金":
-                        hero_list[1] = key
-                        continue
-                    if res[0] < 450 and color_list[2] == "金":
-                        hero_list[2] = key
-
+            for _ in range(10):  # 用于多次检测，有10次容错
+                for key, value in HERO_GLODEN.items():
+                    res = self.ctrl.find_pic(value, 0.95, tp=screen_shot)
+                    if res:
+                        if res[0] < 150 and color_list[0] == "金":
+                            hero_list[0] = key
+                            continue
+                        if res[0] < 300 and color_list[1] == "金":
+                            hero_list[1] = key
+                            continue
+                        if res[0] < 450 and color_list[2] == "金":
+                            hero_list[2] = key
+                if color_list.count("金") == 3 - hero_list.count("空") - hero_list.count("红"):
+                    break
         return hero_list
 
     def check_3s(self, hero_list):

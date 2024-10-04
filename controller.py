@@ -172,31 +172,33 @@ class Controller:
     def find_pic(self, template: str, threshold: float, tp=None):
         """找单图"""
         threshold = 1 - threshold
+        template_list = template.split("|")
 
-        scr = cv2.imread(self.get_resource_path(template))
+        for template in template_list:
+            scr = cv2.imread(self.get_resource_path(template))
 
-        for i in range(3):
-            if tp is not None:
-                break
-            tp = self.captrure_win32()  # 截图
-        else:
-            return
+            for i in range(3):
+                if tp is not None:
+                    break
+                tp = self.captrure_win32()  # 截图
+            else:
+                return
 
-        result = cv2.matchTemplate(scr, tp, cv2.TM_SQDIFF_NORMED)
-        h, w = scr.shape[:2]
-        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
-        # print(min_val, min_loc)
-        if min_val <= threshold:
-            coordinate = (
-                min_loc[0] + int(w / 2),
-                min_loc[1] + int(h / 2),
-                min_loc[0],
-                min_loc[1],
-                min_loc[0] + w,
-                min_loc[1] + h,
-            )
-            # print(coordinate)
-            return coordinate
+            result = cv2.matchTemplate(scr, tp, cv2.TM_SQDIFF_NORMED)
+            h, w = scr.shape[:2]
+            min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+            # print(min_val, min_loc)
+            if min_val <= threshold:
+                coordinate = (
+                    min_loc[0] + int(w / 2),
+                    min_loc[1] + int(h / 2),
+                    min_loc[0],
+                    min_loc[1],
+                    min_loc[0] + w,
+                    min_loc[1] + h,
+                )
+                # print(coordinate)
+                return coordinate
 
     def find_pic_all(self, template: str, threshold: float, tp=None) -> list:
         """找多图"""
@@ -257,19 +259,3 @@ class Controller:
 #     ARegJ.SetDllPathW(os.getcwd() + "\\AoJia64.dll", 0)
 #     AJ = Dispatch("AoJia.AoJiaD")
 #     c = Controller(hwnd, AJ)
-    #     HERO_RED = {
-    #         "王子": "images/hero/wangzi.png",
-    #         "黑寡妇": "images/hero/heiguafu.png",
-    #         "德鲁伊": "images/hero/deluyi.png",
-    #         "敖丙": "images/hero/aobing.png",
-    #         "酒神": "images/hero/jiushen.png",
-    #         "圣骑": "images/hero/shengqi.png",
-    #         "李白": "images/hero/libai.png",
-    #         "卡卡西": "images/hero/kakaxi.png",
-    #     }
-    # tp = c.captrure_win32()
-    # for key, value in HERO_RED.items():
-    #     res = c.find_pic(value, 0.95, tp=tp)
-    #     if res:
-    #         print(key, res)
-
