@@ -11,7 +11,11 @@ a = Analysis(
     datas=[
         ('images\\blyx.ico', 'images'),
         ('images\\cgzm.png', 'images'), 
+        ('images\\back.png', 'images'), 
+        ('images\\dcr.png', 'images'), 
+        ('images\\bx.png', 'images'), 
         ('images\\cs.png', 'images'), 
+        ('images\\cs2.png', 'images'), 
         ('images\\jb100.png', 'images'), 
         ('images\\jb100_h.png', 'images'), 
         ('images\\ok.png', 'images'), 
