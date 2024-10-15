@@ -140,8 +140,7 @@ class Model:
                         self.log_text("已招募%s次，程序停止" % count, "error")
             except Exception as e:
                 # print(e)
-                with open("error.log", "a") as f:
-                    f.write(time.strftime("%m-%d %H:%M:%S : ", time.localtime()) + str(e))
+                self.error_write(e)
                 continue
 
     # 获取颜色列表
@@ -323,10 +322,11 @@ class Model:
                         if self.flag_rest:
                             self.flag_rest = False
                             self.log_text("脚本好像被卡住，尝试重新启动游戏")
-                            self.restart()
+                            self.重启()
                             break
                     except Exception as e:
                         # print("错误：", e)
+                        self.error_write(e)
                         self.log_text(f"第{i+1}行脚本有误，请检查", type="error")
                         continue
                 else:
@@ -455,9 +455,9 @@ class Model:
                             self.移动("右下", 1)
                             self.等待(self.config_data["coins"]["剧毒蝎王delay"])
 
-                self.restart()
+                self.重启()
 
-    def 传送(self, section, map):
+    def 传送(self, section, map, delay=6):
         self.log_text("执行传送")
         cs_rect = self.ctrl.find_pic("images/back.png", 0.95)
         if cs_rect:
@@ -504,6 +504,7 @@ class Model:
         self.ctrl.click(*cf.ZB_SECTION[str(section)])
         time.sleep(0.2)
         self.ctrl.click(*cf.ZB_MAP[str(map)])
+        time.sleep(delay)
 
     def 移动(self, direction, delay):
         self.log_text("执行移动")
@@ -513,21 +514,20 @@ class Model:
         self.log_text("执行等待", delay)
         time.sleep(delay)
 
-    def 回城(self, delay):
+    def 回城(self, delay=6):
         self.log_text("执行回城")
         self.ctrl.click(*cf.ZB_HUICHENG)
+        time.sleep(0.5)
+        self.ctrl.click(*cf.ZB_QUEREN)
         time.sleep(delay)
 
-    def 重启(self, delay):
+    # 重启游戏和脚本
+    def 重启(self, delay=15):
         self.log_text("执行重启")
         self.ctrl.click(*cf.ZB_CAIDAN)
         time.sleep(1)
         self.ctrl.click(*cf.ZB_CHONGQI)
         time.sleep(delay)
-
-    # 重启游戏和脚本
-    def restart(self):
-        self.重启()
         try:
             self.ctrl = controller.Controller(self.__gethwnd(), self.__ajreg())
             self.log_text("关闭活动窗口")
@@ -535,6 +535,10 @@ class Model:
                 self.ctrl.click(225, 832)
                 time.sleep(0.8)
         except Exception as e:
-            with open("error.log", "a") as f:
-                f.write(time.strftime("%m-%d %H:%M:%S : ", time.localtime()) + str(e))
+            self.error_write(e)
             self.log_text("重启游戏失败，请检查", type="error")
+            time.sleep(3)
+
+    def error_write(self, msg):
+        with open("error.log", "a", encoding="utf-8") as f:
+            f.write(time.strftime("%m-%d %H:%M:%S : ", time.localtime()) + str(msg))

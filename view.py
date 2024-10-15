@@ -277,7 +277,7 @@ class App:
             label_boss = tk.Label(self.frame_default, text="击杀时间(秒):")
             label_boss.grid(row=i, column=1, pady=5)
             entry_boss = tk.Entry(self.frame_default, width=5)
-            entry_boss.insert(0, "0.5")
+            entry_boss.insert(0, "1.5")
             entry_boss.grid(row=i, column=2, pady=5)
             entry_boss.bind("<Key>", self.allow_only_digits)
             entry_boss.bind("<BackSpace>", self.on_backspace)
