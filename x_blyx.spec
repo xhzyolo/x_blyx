@@ -18,6 +18,7 @@ a = Analysis(
         ('images\\cs2.png', 'images'), 
         ('images\\jb100.png', 'images'), 
         ('images\\jb100_h.png', 'images'), 
+        ('images\\jb90.png', 'images'), 
         ('images\\ok.png', 'images'), 
         ('images\\zm.png', 'images'), 
         ('images\\zmui1.png', 'images'), 

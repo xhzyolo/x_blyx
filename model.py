@@ -109,7 +109,7 @@ class Model:
         count = 0
         while True:
             try:
-                if not self.ctrl.find_pic("images/jb100.png", 0.9):
+                if not self.ctrl.find_pic("images/jb100.png|images/jb90.png", 0.9):
                     # 执行放弃
                     self.log_text("执行放弃")
                     self.ctrl.click(*cf.ZB_FANGQI)
@@ -150,7 +150,9 @@ class Model:
         while True:
             screen_shot = self.ctrl.captrure_win32()
             # 是否在招募界面
-            if not self.ctrl.find_pic("images/zm.png", 0.9) and not self.ctrl.find_pic("images/jb100.png", 0.9):
+            if not self.ctrl.find_pic("images/zm.png", 0.9) and not self.ctrl.find_pic(
+                "images/jb100.png|images/jb90.png", 0.9
+            ):
                 time.sleep(0.2)
                 continue
             for key, value in cf.COLOR_FILE.items():
@@ -251,7 +253,7 @@ class Model:
                 if ok_rect[0] < 300:
                     return True, 1
                 return True, 2
-            if self.ctrl.find_pic("images/jb100.png", 0.9):
+            if self.ctrl.find_pic("images/jb100.png|images/jb90.png", 0.9):
                 self.log_text("招募完成")
                 for index, hero in enumerate(hero_list):
                     if hero == "空":
@@ -349,8 +351,7 @@ class Model:
             if self.config_data["coins"]["refresh_mode"] == 1:
                 # 树精领主
                 if self.config_data["coins"]["树精领主enable"]:
-                    self.传送(2, 1)
-                    self.等待(6)
+                    self.传送(2, 1, 6)
                     self.移动("右", 1)
                     self.移动("右上", 1)
                     self.等待(self.config_data["coins"]["树精领主delay"])
@@ -363,8 +364,7 @@ class Model:
                     or self.config_data["coins"]["疯牛魔王enable"]
                     or self.config_data["coins"]["剧毒蝎王enable"]
                 ):
-                    self.传送(3, 1)
-                    self.等待(6)
+                    self.传送(3, 1, 6)
                     self.移动("右", 1.5)
                     self.移动("右下", 0.5)
                     self.移动("下", 0.7)
@@ -392,22 +392,19 @@ class Model:
 
                 # 树精长老
                 if self.config_data["coins"]["树精长老enable"]:
-                    self.传送(3, 3)
-                    self.等待(6)
+                    self.传送(3, 3, 6)
                     self.移动("右", 1.5)
                     self.移动("右上", 1.7)
                     self.等待(self.config_data["coins"]["树精长老delay"])
                     self.移动("左下", 1.7)
                     self.移动("左", 1.2)
 
-                    self.传送(5, 1)
-                    self.等待(10)
+                    self.传送(5, 1, 6)
 
             elif self.config_data["coins"]["refresh_mode"] == 2:
                 # 树精领主
                 if self.config_data["coins"]["树精领主enable"]:
-                    self.传送(2, 1)
-                    self.等待(6)
+                    self.传送(2, 1, 6)
                     self.移动("右", 1)
                     self.移动("右上", 1)
                     self.等待(self.config_data["coins"]["树精领主delay"])
@@ -416,8 +413,7 @@ class Model:
 
                 # 树精长老
                 if self.config_data["coins"]["树精长老enable"]:
-                    self.传送(3, 3)
-                    self.等待(6)
+                    self.传送(3, 3, 6)
                     self.移动("右", 1.5)
                     self.移动("右上", 1.7)
                     self.等待(self.config_data["coins"]["树精长老delay"])
@@ -430,8 +426,7 @@ class Model:
                     or self.config_data["coins"]["疯牛魔王enable"]
                     or self.config_data["coins"]["剧毒蝎王enable"]
                 ):
-                    self.传送(3, 1)
-                    self.等待(6)
+                    self.传送(3, 1, 6)
                     self.移动("右", 1.5)
                     self.移动("右下", 0.5)
                     self.移动("下", 0.7)
