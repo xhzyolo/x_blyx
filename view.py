@@ -273,26 +273,44 @@ class App:
         for i, (text, var) in enumerate(zip(checkboxes, self.boss_chk_vars)):
             # print(self.config["coins"][text]["enable"])
             chk = tk.Checkbutton(self.frame_default, text=text, variable=var)
-            chk.grid(row=i, column=0, pady=5)
+            chk.grid(row=i, column=0, pady=3)
             label_boss = tk.Label(self.frame_default, text="击杀时间(秒):")
-            label_boss.grid(row=i, column=1, pady=5)
+            label_boss.grid(row=i, column=1, pady=3)
             entry_boss = tk.Entry(self.frame_default, width=5)
             entry_boss.insert(0, "1.5")
-            entry_boss.grid(row=i, column=2, pady=5)
+            entry_boss.grid(row=i, column=2, pady=3)
             entry_boss.bind("<Key>", self.allow_only_digits)
             entry_boss.bind("<BackSpace>", self.on_backspace)
             self.boss_entry_list.append(entry_boss)
             self.boss_chk_list.append(chk)
 
         lal_ref_mode = tk.Label(self.frame_default, text="刷新模式")
-        lal_ref_mode.grid(row=len(checkboxes) + 1, column=0, pady=10)
+        lal_ref_mode.grid(row=len(checkboxes) + 1, column=0, pady=5)
 
         self.ref_mode = tk.IntVar(value=1)
         radio_ref1 = tk.Radiobutton(self.frame_default, text="王座刷新", variable=self.ref_mode, value=1)
-        radio_ref1.grid(row=len(checkboxes) + 1, column=1, pady=10)
+        radio_ref1.grid(row=len(checkboxes) + 1, column=1, pady=5)
 
         radio_ref2 = tk.Radiobutton(self.frame_default, text="重启刷新", variable=self.ref_mode, value=2)
-        radio_ref2.grid(row=len(checkboxes) + 1, column=2, pady=10)
+        radio_ref2.grid(row=len(checkboxes) + 1, column=2, pady=5)
+
+        lal_hc = tk.Label(self.frame_default, text="回城时间")
+        lal_hc.grid(row=len(checkboxes) + 2, column=0, pady=0)
+        self.hc_delay = tk.Entry(self.frame_default, width=5)
+        self.hc_delay.insert(0, "5")
+        self.hc_delay.grid(row=len(checkboxes) + 3, column=0, pady=0)
+
+        lal_cs = tk.Label(self.frame_default, text="传送时间")
+        lal_cs.grid(row=len(checkboxes) + 2, column=1, pady=0)
+        self.cs_delay = tk.Entry(self.frame_default, width=5)
+        self.cs_delay.insert(0, "6")
+        self.cs_delay.grid(row=len(checkboxes) + 3, column=1, pady=0)
+
+        lal_cq = tk.Label(self.frame_default, text="重启时间")
+        lal_cq.grid(row=len(checkboxes) + 2, column=2, pady=0)
+        self.cq_delay = tk.Entry(self.frame_default, width=5)
+        self.cq_delay.insert(0, "12")
+        self.cq_delay.grid(row=len(checkboxes) + 3, column=2, pady=0)
 
     # 选项卡二（自定义指令）
     def tab_coin_custom(self, frame):
@@ -526,6 +544,19 @@ class App:
                 self.ref_mode.set(config["coins"]["refresh_mode"])
                 self.rad_mode_var.set(config["coins"]["coins_mode"])
 
+                # 刷金时间配置
+                if config.has_option("coins", "hc_delay"):
+                    self.hc_delay.delete(0, tk.END)
+                    self.hc_delay.insert(0, config["coins"]["hc_delay"])
+
+                if config.has_option("coins", "cs_delay"):
+                    self.cs_delay.delete(0, tk.END)
+                    self.cs_delay.insert(0, config["coins"]["cs_delay"])
+
+                if config.has_option("coins", "cq_delay"):
+                    self.cq_delay.delete(0, tk.END)
+                    self.cq_delay.insert(0, config["coins"]["cq_delay"])
+
                 # UI禁用
                 if self.rad_mode_var.get() == 1:
                     for combo in self.frame_default.children.values():
@@ -569,15 +600,43 @@ class App:
         config["cards"] = config_cards
 
         # 抽卡配置
-        config["config"] = {"cards_count": self.entry.get(), "h_stop": self.check_h_stop_var.get()}
+        try:
+            cards_count = int(self.entry.get())
+        except ValueError:
+            cards_count = 0
+
+        config["config"] = {
+            "cards_count": cards_count,
+            "h_stop": self.check_h_stop_var.get(),
+        }
 
         # 刷金配置
         for i, item in enumerate(self.boss_chk_list):
             config_coins[item["text"] + "enable"] = self.boss_chk_vars[i].get()
-            config_coins[item["text"] + "delay"] = float(self.boss_entry_list[i].get())
+            config_coins[item["text"] + "delay"] = float(
+                self.boss_entry_list[i].get() if self.boss_entry_list[i].get() != "" else 0
+            )
 
         config_coins["refresh_mode"] = self.ref_mode.get()
         config_coins["coins_mode"] = self.rad_mode_var.get()
+
+        # 刷金默认时间配置
+        try:
+            hc_delay = float(self.hc_delay.get())
+        except:
+            hc_delay = 0
+        try:
+            cs_delay = float(self.cs_delay.get())
+        except:
+            cs_delay = 0
+        try:
+            cq_delay = float(self.cq_delay.get())
+        except:
+            cq_delay = 0
+
+        config_coins["hc_delay"] = hc_delay
+        config_coins["cs_delay"] = cs_delay
+        config_coins["cq_delay"] = cq_delay
 
         # 刷金自定义配置
         for line in self.com_text.get("1.0", "end-1c").splitlines():

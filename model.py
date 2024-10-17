@@ -339,6 +339,10 @@ class Model:
     # 默认刷金模式
     def run_coins_default_thread(self):
         count = 1
+        hc_delay = float(self.config_data["coins"]["hc_delay"])
+        cs_delay = float(self.config_data["coins"]["cs_delay"])
+        cq_delay = float(self.config_data["coins"]["cq_delay"])
+
         for key, value in self.config_data["coins"].items():
             if "enable" in key and value == True:
                 break
@@ -351,7 +355,7 @@ class Model:
             if self.config_data["coins"]["refresh_mode"] == 1:
                 # 树精领主
                 if self.config_data["coins"]["树精领主enable"]:
-                    self.传送(2, 1, 6)
+                    self.传送(2, 1, cs_delay)
                     self.移动("右", 1)
                     self.移动("右上", 1)
                     self.等待(self.config_data["coins"]["树精领主delay"])
@@ -364,7 +368,7 @@ class Model:
                     or self.config_data["coins"]["疯牛魔王enable"]
                     or self.config_data["coins"]["剧毒蝎王enable"]
                 ):
-                    self.传送(3, 1, 6)
+                    self.传送(3, 1, cs_delay)
                     self.移动("右", 1.5)
                     self.移动("右下", 0.5)
                     self.移动("下", 0.7)
@@ -388,23 +392,30 @@ class Model:
                             self.移动("右下", 1)
                             self.等待(self.config_data["coins"]["剧毒蝎王delay"])
 
-                    self.回城(6.2)
+                    self.回城(hc_delay)
 
                 # 树精长老
                 if self.config_data["coins"]["树精长老enable"]:
-                    self.传送(3, 3, 6)
+                    self.传送(3, 3, cs_delay)
                     self.移动("右", 1.5)
                     self.移动("右上", 1.7)
                     self.等待(self.config_data["coins"]["树精长老delay"])
                     self.移动("左下", 1.7)
                     self.移动("左", 1.2)
 
-                    self.传送(5, 1, 6)
+                if self.flag_rest:
+                    self.flag_rest = False
+                    self.log_text("脚本好像被卡住，尝试重新启动游戏")
+                    self.重启(cq_delay)
+                    break
+
+                self.log_text("王座刷新")
+                self.传送(5, 1, cs_delay)
 
             elif self.config_data["coins"]["refresh_mode"] == 2:
                 # 树精领主
                 if self.config_data["coins"]["树精领主enable"]:
-                    self.传送(2, 1, 6)
+                    self.传送(2, 1, cs_delay)
                     self.移动("右", 1)
                     self.移动("右上", 1)
                     self.等待(self.config_data["coins"]["树精领主delay"])
@@ -413,7 +424,7 @@ class Model:
 
                 # 树精长老
                 if self.config_data["coins"]["树精长老enable"]:
-                    self.传送(3, 3, 6)
+                    self.传送(3, 3, cs_delay)
                     self.移动("右", 1.5)
                     self.移动("右上", 1.7)
                     self.等待(self.config_data["coins"]["树精长老delay"])
@@ -426,7 +437,7 @@ class Model:
                     or self.config_data["coins"]["疯牛魔王enable"]
                     or self.config_data["coins"]["剧毒蝎王enable"]
                 ):
-                    self.传送(3, 1, 6)
+                    self.传送(3, 1, cs_delay)
                     self.移动("右", 1.5)
                     self.移动("右下", 0.5)
                     self.移动("下", 0.7)
@@ -450,7 +461,8 @@ class Model:
                             self.移动("右下", 1)
                             self.等待(self.config_data["coins"]["剧毒蝎王delay"])
 
-                self.重启()
+                self.log_text("重启刷新")
+                self.重启(cq_delay)
 
     def 传送(self, section, map, delay=6):
         self.log_text("执行传送")
@@ -493,9 +505,9 @@ class Model:
                 self.flag_rest = True
                 return
         if self.config_data["coins"]["coins_mode"] == 2 and self.config_data["coins"]["refresh_mode"] == 1:
-            time.sleep(2)
+            time.sleep(1.3)
         else:
-            time.sleep(1)
+            time.sleep(0.6)
         self.ctrl.click(*cf.ZB_SECTION[str(section)])
         time.sleep(0.2)
         self.ctrl.click(*cf.ZB_MAP[str(map)])
