@@ -70,6 +70,15 @@ class Controller:
         self.hwnd = HWND
         self.aj.SetWindowSize(self.hwnd, 465, 850)
         self.__kqhoutai()
+        self.w_ratio, self.h_ratio = self.get_rect_ratio()
+
+    def get_rect_ratio(self):
+        """获取窗口坐标比例"""
+        width = 465
+        height = 850
+        win_size = self.aj.GetWindowSize(self.hwnd)
+        if win_size[0]:
+            return win_size[1] / width, win_size[2] / height
 
     # def __ajreg(self):
     #     """注册插件"""
@@ -98,12 +107,19 @@ class Controller:
     def click(self, x, y):
         """单击"""
         if self.ishas():
+            x = int(x * self.w_ratio)
+            y = int(y * self.h_ratio)
+            print("点击的坐标是：", x, y)
             self.aj.MoveTo(x, y)
             self.aj.LeftClick()
 
     def swipe(self, sx, sy, ex, ey, delay):
         """滑动"""
         if self.ishas():
+            sx = int(sx * self.w_ratio)
+            sy = int(sy * self.h_ratio)
+            ex = int(ex * self.w_ratio)
+            ey = int(ey * self.h_ratio)
             # print("开始移动")
             self.aj.MoveTo(sx, sy)
             self.aj.LeftDown()
@@ -177,6 +193,9 @@ class Controller:
         for template in template_list:
             scr = cv2.imread(self.get_resource_path(template))
 
+            # 根据w_ratio 和 h_ratio 缩放模板图像
+            scr = cv2.resize(scr, (int(scr.shape[1] * self.w_ratio), int(scr.shape[0] * self.h_ratio)))
+
             for i in range(3):
                 if tp is not None:
                     break
@@ -197,7 +216,17 @@ class Controller:
                     min_loc[0] + w,
                     min_loc[1] + h,
                 )
-                # print(coordinate)
+
+                # 反向缩放坐标
+                coordinate = (
+                    int(coordinate[0] / self.w_ratio),
+                    int(coordinate[1] / self.h_ratio),
+                    int(coordinate[2] / self.w_ratio),
+                    int(coordinate[3] / self.h_ratio),
+                    int(coordinate[4] / self.w_ratio),
+                    int(coordinate[5] / self.h_ratio),
+                )
+
                 return coordinate
 
     def find_pic_all(self, template: str, threshold: float, tp=None) -> list:
@@ -205,6 +234,10 @@ class Controller:
         threshold = 1 - threshold
         # scr = cv2.imread(template, cv2.IMREAD_UNCHANGED) 这种方法无法程序出错
         scr = cv2.imread(self.get_resource_path(template))
+
+        # 根据w_ratio 和 h_ratio 缩放模板图像
+        scr = cv2.resize(scr, (int(scr.shape[1] * self.w_ratio), int(scr.shape[0] * self.h_ratio)))
+
         if tp is None:
             tp = self.captrure_win32()  # 截图
 
@@ -224,6 +257,15 @@ class Controller:
                 int(pt[1]),
                 int(pt[0] + w),
                 int(pt[1] + h),
+            )
+            # 反向缩放坐标
+            coordinate = (
+                int(coordinate[0] / self.w_ratio),
+                int(coordinate[1] / self.h_ratio),
+                int(coordinate[2] / self.w_ratio),
+                int(coordinate[3] / self.h_ratio),
+                int(coordinate[4] / self.w_ratio),
+                int(coordinate[5] / self.h_ratio),
             )
             coordinates.append(coordinate)
 
