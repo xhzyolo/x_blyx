@@ -160,15 +160,15 @@ class Model:
                 res_list = self.ctrl.find_pic_all(value, 0.99, tp=screen_shot)
                 for res in res_list:
                     # print("res:", res)
-                    if res[1] > 530:
+                    if res[1] > cf.ZB_BOTTOM:
                         continue
-                    if res[0] < 150:
+                    if res[0] < cf.ZB_RIGHT1:
                         color_list[0] = key
                         continue
-                    if res[0] < 300:
+                    if res[0] < cf.ZB_RIGHT2:
                         color_list[1] = key
                         continue
-                    if res[0] < 450:
+                    if res[0] < cf.ZB_RIGHT3:
                         color_list[2] = key
                 if "空" not in color_list:
                     return color_list
@@ -186,13 +186,13 @@ class Model:
                 for key, value in cf.HERO_RED.items():
                     res = self.ctrl.find_pic(value, 0.95, tp=screen_shot)
                     if res:
-                        if res[0] < 150 and color_list[0] == "红":
+                        if res[0] < cf.ZB_RIGHT1 and color_list[0] == "红":
                             hero_list[0] = key
                             continue
-                        if res[0] < 300 and color_list[1] == "红":
+                        if res[0] < cf.ZB_RIGHT2 and color_list[1] == "红":
                             hero_list[1] = key
                             continue
-                        if res[0] < 450 and color_list[2] == "红":
+                        if res[0] < cf.ZB_RIGHT3 and color_list[2] == "红":
                             hero_list[2] = key
                 if color_list.count("红") == 3 - hero_list.count("空"):
                     break
@@ -202,13 +202,13 @@ class Model:
                 for key, value in cf.HERO_GLODEN.items():
                     res = self.ctrl.find_pic(value, 0.95, tp=screen_shot)
                     if res:
-                        if res[0] < 150 and color_list[0] == "金":
+                        if res[0] < cf.ZB_RIGHT1 and color_list[0] == "金":
                             hero_list[0] = key
                             continue
-                        if res[0] < 300 and color_list[1] == "金":
+                        if res[0] < cf.ZB_RIGHT2 and color_list[1] == "金":
                             hero_list[1] = key
                             continue
-                        if res[0] < 450 and color_list[2] == "金":
+                        if res[0] < cf.ZB_RIGHT3 and color_list[2] == "金":
                             hero_list[2] = key
                 if color_list.count("金") == 3 - hero_list.count("空") - hero_list.count("红"):
                     break
@@ -248,9 +248,9 @@ class Model:
                 self.ctrl.click(*cf.ZB_FANGQI)
                 time.sleep(0.2)
                 self.ctrl.click(*cf.ZB_QUEREN)
-                if ok_rect[0] < 150:
+                if ok_rect[0] < cf.ZB_RIGHT1:
                     return True, 0
-                if ok_rect[0] < 300:
+                if ok_rect[0] < cf.ZB_RIGHT2:
                     return True, 1
                 return True, 2
             if self.ctrl.find_pic("images/jb100.png|images/jb90.png|images/zhe.png", 0.9):

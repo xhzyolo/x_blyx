@@ -37,6 +37,12 @@ ZB_HUICHENG = (410, 738)  # 回城按钮
 ZB_CAIDAN = (308, 20)  # 菜单按钮
 ZB_CHONGQI = (270, 270)  # 重启按钮'
 
+# 抽卡边界
+ZB_RIGHT1 = 120
+ZB_RIGHT2 = 280
+ZB_RIGHT3 = 410
+ZB_BOTTOM = 530
+
 # 章节坐标
 ZB_SECTION = {
     "1": (120, 250),
