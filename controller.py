@@ -109,7 +109,7 @@ class Controller:
         if self.ishas():
             x = int(x * self.w_ratio)
             y = int(y * self.h_ratio)
-            print("点击的坐标是：", x, y)
+            # print("点击的坐标是：", x, y)
             self.aj.MoveTo(x, y)
             self.aj.LeftClick()
 
@@ -217,15 +217,15 @@ class Controller:
                     min_loc[1] + h,
                 )
 
-                # 反向缩放坐标
-                coordinate = (
-                    int(coordinate[0] / self.w_ratio),
-                    int(coordinate[1] / self.h_ratio),
-                    int(coordinate[2] / self.w_ratio),
-                    int(coordinate[3] / self.h_ratio),
-                    int(coordinate[4] / self.w_ratio),
-                    int(coordinate[5] / self.h_ratio),
-                )
+                # # 反向缩放坐标
+                # coordinate = (
+                #     int(coordinate[0] / self.w_ratio),
+                #     int(coordinate[1] / self.h_ratio),
+                #     int(coordinate[2] / self.w_ratio),
+                #     int(coordinate[3] / self.h_ratio),
+                #     int(coordinate[4] / self.w_ratio),
+                #     int(coordinate[5] / self.h_ratio),
+                # )
 
                 return coordinate
 
@@ -258,15 +258,15 @@ class Controller:
                 int(pt[0] + w),
                 int(pt[1] + h),
             )
-            # 反向缩放坐标
-            coordinate = (
-                int(coordinate[0] / self.w_ratio),
-                int(coordinate[1] / self.h_ratio),
-                int(coordinate[2] / self.w_ratio),
-                int(coordinate[3] / self.h_ratio),
-                int(coordinate[4] / self.w_ratio),
-                int(coordinate[5] / self.h_ratio),
-            )
+            # # 反向缩放坐标
+            # coordinate = (
+            #     int(coordinate[0] / self.w_ratio),
+            #     int(coordinate[1] / self.h_ratio),
+            #     int(coordinate[2] / self.w_ratio),
+            #     int(coordinate[3] / self.h_ratio),
+            #     int(coordinate[4] / self.w_ratio),
+            #     int(coordinate[5] / self.h_ratio),
+            # )
             coordinates.append(coordinate)
 
         # 使用非极大值抑制过滤重叠的匹配结果

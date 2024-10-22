@@ -23,7 +23,7 @@ class App:
         self.config_data = {}
         self.p_running = None
         title = f"x-blyx   V: {self.version}"
-        self.__create_window(title, 450, 530)
+        self.__create_window(title, 450, 550)
         self.__create_tabs()
         self.root.iconbitmap(self.get_resource_path("images/blyx.ico"))
         self.config = self.get_config()
@@ -140,6 +140,7 @@ class App:
         checkboxes = [
             "天使",
             "舞姬",
+            "铁娘子",
             "王子",
             "黑寡妇",
             "德鲁伊",
@@ -153,7 +154,7 @@ class App:
         self.check_list = []
         for i, (text, var) in enumerate(zip(checkboxes, self.checkbox_vars)):
             chk = tk.Checkbutton(frame, text=text, variable=var)
-            chk.pack(side="top", anchor="n" if i == 0 else "n")  # 使第一个复选框居中，后面的也居中
+            chk.pack(side="top", anchor="n" if i == 0 else "n", pady=0)  # 使第一个复选框居中，后面的也居中
             self.check_list.append(chk)
 
     # 选项卡一抽卡结果区域
@@ -191,9 +192,15 @@ class App:
         self.label_show["天使"] = tk.Label(frame, text="天使 0")
         self.label_show["天使"].grid(row=3, column=0, padx=(20, 0), pady=5)
         self.label_count["天使"] = 0
+
         self.label_show["舞姬"] = tk.Label(frame, text="舞姬 0")
         self.label_show["舞姬"].grid(row=3, column=1, pady=2)
         self.label_count["舞姬"] = 0
+
+        self.label_show["铁娘子"] = tk.Label(frame, text="铁娘子 0")
+        self.label_show["铁娘子"].grid(row=3, column=2, pady=2)
+        self.label_count["铁娘子"] = 0
+
         self.label_show["王子"] = tk.Label(frame, text="王子 0")
         self.label_show["王子"].grid(row=4, column=0, padx=(20, 0), pady=2)
         self.label_count["王子"] = 0

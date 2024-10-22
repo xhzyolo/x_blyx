@@ -109,7 +109,7 @@ class Model:
         count = 0
         while True:
             try:
-                if not self.ctrl.find_pic("images/jb100.png|images/jb90.png", 0.9):
+                if not self.ctrl.find_pic("images/jb100.png|images/jb90.png|images/zhe.png", 0.9):
                     # 执行放弃
                     self.log_text("执行放弃")
                     self.ctrl.click(*cf.ZB_FANGQI)
@@ -151,7 +151,7 @@ class Model:
             screen_shot = self.ctrl.captrure_win32()
             # 是否在招募界面
             if not self.ctrl.find_pic("images/zm.png", 0.9) and not self.ctrl.find_pic(
-                "images/jb100.png|images/jb90.png", 0.9
+                "images/jb100.png|images/jb90.png|images/zhe.png", 0.9
             ):
                 time.sleep(0.2)
                 continue
@@ -253,7 +253,7 @@ class Model:
                 if ok_rect[0] < 300:
                     return True, 1
                 return True, 2
-            if self.ctrl.find_pic("images/jb100.png|images/jb90.png", 0.9):
+            if self.ctrl.find_pic("images/jb100.png|images/jb90.png|images/zhe.png", 0.9):
                 self.log_text("招募完成")
                 for index, hero in enumerate(hero_list):
                     if hero == "空":
