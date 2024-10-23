@@ -340,18 +340,14 @@ class App:
         com_text.insert("end", "#  3.传送需确保在传送旁边\n")
         com_text.insert("end", "\n")
         com_text.insert("end", "\n")
-        com_text.insert("end", "# 传送(章节,地图)\n")
-        com_text.insert("end", "# 除等待其它不需要时间\n")
-        com_text.insert("end", "# 单位:秒 支持小数\n")
-        com_text.insert("end", "\n")
         com_text.insert("end", "# 例：\n")
         com_text.insert("end", "\n")
-        com_text.insert("end", "传送(2, 1, 6)\n")
+        com_text.insert("end", "传送(2, 1)\n")
         com_text.insert("end", "移动(右, 1)\n")
         com_text.insert("end", "移动(右上, 1)\n")
         com_text.insert("end", "等待(2)\n")
-        com_text.insert("end", "回城(6)\n")
-        com_text.insert("end", "重启(12)\n")
+        com_text.insert("end", "回城()\n")
+        com_text.insert("end", "重启()\n")
 
     # 允许输入数字
     def allow_only_digits(self, event):

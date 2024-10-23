@@ -36,6 +36,7 @@ ZB_FANGQI = (225, 693)  # 放弃按钮
 ZB_HUICHENG = (410, 738)  # 回城按钮
 ZB_CAIDAN = (308, 20)  # 菜单按钮
 ZB_CHONGQI = (270, 270)  # 重启按钮'
+ZB_KONGBAI = (225, 832)  # 空白坐标
 
 # 抽卡边界
 ZB_RIGHT1 = 120

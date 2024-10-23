@@ -1,6 +1,6 @@
 import ctypes
 import sys, os, time
-import win32gui, win32ui, win32con
+import win32gui, win32ui, win32con, win32api
 import cv2
 import numpy as np
 
@@ -68,17 +68,21 @@ class Controller:
     def __init__(self, HWND, AJ) -> None:
         self.aj = AJ
         self.hwnd = HWND
-        self.aj.SetWindowSize(self.hwnd, 465, 850)
-        self.__kqhoutai()
-        self.w_ratio, self.h_ratio = self.get_rect_ratio()
 
-    def get_rect_ratio(self):
-        """获取窗口坐标比例"""
-        width = 465
-        height = 850
-        win_size = self.aj.GetWindowSize(self.hwnd)
-        if win_size[0]:
-            return win_size[1] / width, win_size[2] / height
+        self.w_ratio, self.h_ratio = self.set_window_size()
+        # print("窗口比例：", self.w_ratio, self.h_ratio)
+        self.__kqhoutai()
+
+    def set_window_size(self):
+        """设置窗口大小"""
+        height = win32api.GetSystemMetrics(win32con.SM_CYSCREEN)
+        # print(height)
+        if height >= 1024:
+            self.aj.SetWindowSize(self.hwnd, 465, 850)
+            return 1, 1
+        else:
+            self.aj.SetWindowSize(self.hwnd, 336, 620)
+            return 336 / 465, 620 / 850
 
     # def __ajreg(self):
     #     """注册插件"""
@@ -207,7 +211,7 @@ class Controller:
             result = cv2.matchTemplate(scr, tp, cv2.TM_SQDIFF_NORMED)
             h, w = scr.shape[:2]
             min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
-            # print(min_val, min_loc)
+            # print(template, 1 - min_val, min_loc)
             if min_val <= threshold:
                 coordinate = (
                     min_loc[0] + int(w / 2),

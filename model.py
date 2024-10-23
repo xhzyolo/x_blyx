@@ -483,10 +483,10 @@ class Model:
             for i in range(10):
                 cs_rect = self.ctrl.find_pic("images/cs.png|images/cs2.png", 0.95)
                 if cs_rect:
-                    self.ctrl.click(cs_rect[0], cs_rect[1])
+                    self.ctrl.click(cs_rect[0] / self.ctrl.w_ratio, cs_rect[1] / self.ctrl.h_ratio)
                     break
                 self.log_text("未找到传送点")
-                self.ctrl.click(225, 832)
+                self.ctrl.click(*cf.ZB_KONGBAI)
                 time.sleep(2)
             else:
                 self.flag_rest = True
@@ -497,19 +497,19 @@ class Model:
             for i in range(10):
                 dcr_rect = self.ctrl.find_pic("images/dcr.png", 0.95)
                 if dcr_rect:
-                    x = dcr_rect[0] - 5
-                    y = dcr_rect[1] + 110
+                    x = dcr_rect[0] / self.ctrl.w_ratio - 5
+                    y = dcr_rect[1] / self.ctrl.h_ratio + 110
                 else:
                     bx_rect = self.ctrl.find_pic("images/bx.png", 0.95)
                     if bx_rect:
-                        x = bx_rect[0] + 23
-                        y = bx_rect[1] + 64
+                        x = bx_rect[0] / self.ctrl.w_ratio + 23
+                        y = bx_rect[1] / self.ctrl.h_ratio + 64
                 if dcr_rect or bx_rect:
                     if self.ctrl.find_pic("images/cs.png|images/cs2.png", 0.95):
                         self.ctrl.click(x, y)
                         break
                 self.log_text("未找到传送点")
-                self.ctrl.click(225, 832)
+                self.ctrl.click(*cf.ZB_KONGBAI)
                 time.sleep(2)
             else:
                 self.flag_rest = True
@@ -574,7 +574,7 @@ class Model:
         time.sleep(2)
         self.log_text("关闭活动窗口")
         for _ in range(3):
-            self.ctrl.click(225, 832)
+            self.ctrl.click(*cf.ZB_KONGBAI)
             time.sleep(0.8)
 
     def error_write(self, msg):
