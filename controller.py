@@ -100,6 +100,7 @@ class Controller:
 
     def __kqhoutai(self):
         """开启后台"""
+        self.aj.GBHouTai()
         res = self.aj.KQHouTai(self.hwnd, "FD", "WM", "WM", "LAA|LAM", 0)
         # if res == 0:
         #     print("后台绑定失败，程序将在前台运行")

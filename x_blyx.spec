@@ -16,6 +16,7 @@ a = Analysis(
         ('images\\bx.png', 'images'), 
         ('images\\cs.png', 'images'), 
         ('images\\cs2.png', 'images'), 
+        ('images\\liaotian.png', 'images'), 
         ('images\\jb100.png', 'images'), 
         ('images\\jb100_h.png', 'images'), 
         ('images\\jb90.png', 'images'), 

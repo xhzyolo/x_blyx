@@ -13,6 +13,7 @@ class Model:
         self.task_queue = task_queue
         self.config_data = config_data
         self.flag_rest = False
+        self.aj = None
         # {'cards': {'天使': True, '舞姬': True, '王子': True, '黑寡妇': False, '德鲁伊': False, '敖丙': False, '酒神': True, '圣骑': False, '李白': True, '卡卡西': True, 'cards_count': '0', 'h_stop': 'False'}, 'coins': {'树精领主enable': False, '树精领主delay': 0.5, '树精长老enable': True, '树精长老delay': 13.0, '火焰石像enable': False, '火焰石像delay': 1.0, '疯牛魔王enable': False, '疯牛魔王delay': 1.5, '剧毒蝎王enable': True, '剧毒蝎王delay': 0.5, 'refresh_mode': 1, 'coins_mode': 1}}
 
     # 获取资源文件绝对路径
@@ -47,7 +48,8 @@ class Model:
         """获取窗口句柄"""
         hwnd = win32gui.FindWindow(None, "百炼英雄")
         if not hwnd:
-            self.log_text("未找到游戏窗口，程序停止", "error")
+            # self.log_text("未找到游戏窗口，程序停止", "error")
+            return None
         return hwnd
 
     # 更新UI界面结果
@@ -60,6 +62,8 @@ class Model:
     def log_text(self, msg: str, type="log"):
         """错误对话框提示"""
         self.task_queue.put({"msg": msg, "type": type}, block=True)
+        if type == "error":
+            time.sleep(2)
 
     # 退出程序
     def exit_process(self):
@@ -70,7 +74,9 @@ class Model:
     def run_cards(self):
         """主线程"""
         # print("开始执行")
-        self.ctrl = controller.Controller(self.__gethwnd(), self.__ajreg())
+        if self.aj is None:
+            self.aj = self.__ajreg()
+        self.ctrl = controller.Controller(self.__gethwnd(), self.aj)
         if not self.ctrl.find_pic("images/zmui1.png", 0.9):
             self.log_text("请进入招募界面再启动程序", "error")
 
@@ -200,7 +206,7 @@ class Model:
         if "金" in color_list:
             for _ in range(10):  # 用于多次检测，有10次容错
                 for key, value in cf.HERO_GLODEN.items():
-                    res = self.ctrl.find_pic(value, 0.95, tp=screen_shot)
+                    res = self.ctrl.find_pic(value, 0.97, tp=screen_shot)
                     if res:
                         if res[0] < cf.ZB_RIGHT1 * self.ctrl.w_ratio and color_list[0] == "金":
                             hero_list[0] = key
@@ -266,7 +272,9 @@ class Model:
     def run_coins(self):
         """主线程"""
         # print("开始执行刷金")
-        self.ctrl = controller.Controller(self.__gethwnd(), self.__ajreg())
+        if self.aj is None:
+            self.aj = self.__ajreg()
+        self.ctrl = controller.Controller(self.__gethwnd(), self.aj)
 
         # 开始检测线程
         check = threading.Thread(target=self.run_coins_check_thread, daemon=True)
@@ -319,7 +327,11 @@ class Model:
                                 arg = arg
                             _args.append(arg)
 
-                        func(*_args)
+                        # print(f"执行：{func_name}{_args}")
+                        if len(_args) and _args[0]:
+                            func(*_args)
+                        else:
+                            func()
 
                         if self.flag_rest:
                             self.flag_rest = False
@@ -339,9 +351,6 @@ class Model:
     # 默认刷金模式
     def run_coins_default_thread(self):
         count = 1
-        hc_delay = float(self.config_data["coins"]["hc_delay"])
-        cs_delay = float(self.config_data["coins"]["cs_delay"])
-        cq_delay = float(self.config_data["coins"]["cq_delay"])
 
         for key, value in self.config_data["coins"].items():
             if "enable" in key and value == True:
@@ -353,14 +362,15 @@ class Model:
             self.log_text(f"默认模式：第{count}轮")
 
             if self.config_data["coins"]["refresh_mode"] == 1:
-                # 树精领主
-                if self.config_data["coins"]["树精领主enable"]:
-                    self.传送(2, 1, cs_delay)
-                    self.移动("右", 1)
-                    self.移动("右上", 1)
-                    self.等待(self.config_data["coins"]["树精领主delay"])
-                    self.移动("左下", 1)
-                    self.移动("左", 0.7)
+
+                # 树精长老
+                if self.config_data["coins"]["树精长老enable"]:
+                    self.传送(3, 3)
+                    self.移动("右", 1.5)
+                    self.移动("右上", 1.7)
+                    self.等待(self.config_data["coins"]["树精长老delay"])
+                    self.移动("左下", 1.7)
+                    self.移动("左", 1.2)
 
                 # 火焰石像
                 if (
@@ -368,7 +378,7 @@ class Model:
                     or self.config_data["coins"]["疯牛魔王enable"]
                     or self.config_data["coins"]["剧毒蝎王enable"]
                 ):
-                    self.传送(3, 1, cs_delay)
+                    self.传送(3, 1)
                     self.移动("右", 1.5)
                     self.移动("右下", 0.5)
                     self.移动("下", 0.7)
@@ -392,30 +402,30 @@ class Model:
                             self.移动("右下", 1)
                             self.等待(self.config_data["coins"]["剧毒蝎王delay"])
 
-                    self.回城(hc_delay)
+                    self.回城()
 
-                # 树精长老
-                if self.config_data["coins"]["树精长老enable"]:
-                    self.传送(3, 3, cs_delay)
-                    self.移动("右", 1.5)
-                    self.移动("右上", 1.7)
-                    self.等待(self.config_data["coins"]["树精长老delay"])
-                    self.移动("左下", 1.7)
-                    self.移动("左", 1.2)
+                # 树精领主
+                if self.config_data["coins"]["树精领主enable"]:
+                    self.传送(2, 1)
+                    self.移动("右", 1)
+                    self.移动("右上", 1)
+                    self.等待(self.config_data["coins"]["树精领主delay"])
+                    self.移动("左下", 1)
+                    self.移动("左", 0.7)
 
                 if self.flag_rest:
                     self.flag_rest = False
                     self.log_text("脚本好像被卡住，尝试重新启动游戏")
-                    self.重启(cq_delay)
+                    self.重启()
                     break
 
                 self.log_text("王座刷新")
-                self.传送(5, 1, cs_delay)
+                self.传送(5, 1)
 
             elif self.config_data["coins"]["refresh_mode"] == 2:
                 # 树精领主
                 if self.config_data["coins"]["树精领主enable"]:
-                    self.传送(2, 1, cs_delay)
+                    self.传送(2, 1)
                     self.移动("右", 1)
                     self.移动("右上", 1)
                     self.等待(self.config_data["coins"]["树精领主delay"])
@@ -424,7 +434,7 @@ class Model:
 
                 # 树精长老
                 if self.config_data["coins"]["树精长老enable"]:
-                    self.传送(3, 3, cs_delay)
+                    self.传送(3, 3)
                     self.移动("右", 1.5)
                     self.移动("右上", 1.7)
                     self.等待(self.config_data["coins"]["树精长老delay"])
@@ -437,7 +447,7 @@ class Model:
                     or self.config_data["coins"]["疯牛魔王enable"]
                     or self.config_data["coins"]["剧毒蝎王enable"]
                 ):
-                    self.传送(3, 1, cs_delay)
+                    self.传送(3, 1)
                     self.移动("右", 1.5)
                     self.移动("右下", 0.5)
                     self.移动("下", 0.7)
@@ -462,9 +472,9 @@ class Model:
                             self.等待(self.config_data["coins"]["剧毒蝎王delay"])
 
                 self.log_text("重启刷新")
-                self.重启(cq_delay)
+                self.重启()
 
-    def 传送(self, section, map, delay=6):
+    def 传送(self, section, map):
         self.log_text("执行传送")
         cs_rect = self.ctrl.find_pic("images/back.png", 0.95)
         if cs_rect:
@@ -511,7 +521,11 @@ class Model:
         self.ctrl.click(*cf.ZB_SECTION[str(section)])
         time.sleep(0.2)
         self.ctrl.click(*cf.ZB_MAP[str(map)])
-        time.sleep(delay)
+        time.sleep(3)
+        for _ in range(20):
+            if self.ctrl.find_pic("images/cs.png|images/cs2.png", 0.95):
+                break
+            time.sleep(0.5)
 
     def 移动(self, direction, delay):
         self.log_text("执行移动")
@@ -521,30 +535,47 @@ class Model:
         self.log_text("执行等待", delay)
         time.sleep(delay)
 
-    def 回城(self, delay=6):
+    def 回城(self):
         self.log_text("执行回城")
         self.ctrl.click(*cf.ZB_HUICHENG)
         time.sleep(0.5)
         self.ctrl.click(*cf.ZB_QUEREN)
-        time.sleep(delay)
+        time.sleep(3)
+        for _ in range(20):
+            if self.ctrl.find_pic("images/cs.png|images/cs2.png", 0.95):
+                break
+            time.sleep(0.5)
 
     # 重启游戏和脚本
-    def 重启(self, delay=15):
+    def 重启(self):
         self.log_text("执行重启")
         self.ctrl.click(*cf.ZB_CAIDAN)
         time.sleep(1)
         self.ctrl.click(*cf.ZB_CHONGQI)
-        time.sleep(delay)
-        try:
-            self.ctrl = controller.Controller(self.__gethwnd(), self.__ajreg())
-            self.log_text("关闭活动窗口")
-            for i in range(3):
-                self.ctrl.click(225, 832)
-                time.sleep(0.8)
-        except Exception as e:
-            self.error_write(e)
-            self.log_text("重启游戏失败，请检查", type="error")
-            time.sleep(3)
+        time.sleep(5)
+        for _ in range(40):
+            try:
+                hwnd = self.__gethwnd()
+                if hwnd is None:
+                    raise Exception
+                self.ctrl = controller.Controller(hwnd, self.aj)
+                break
+            except:
+                time.sleep(0.5)
+        else:
+            self.error_write("重启后，长时间未进入游戏")
+            self.log_text("重启游戏时间过长，请检查", type="error")
+
+        for _ in range(30):
+            if self.ctrl.find_pic("images/cs.png|images/cs2.png|images/liaotian.png", 0.95):
+                break
+            time.sleep(0.5)
+
+        time.sleep(2)
+        self.log_text("关闭活动窗口")
+        for _ in range(3):
+            self.ctrl.click(225, 832)
+            time.sleep(0.8)
 
     def error_write(self, msg):
         with open("error.log", "a", encoding="utf-8") as f:
