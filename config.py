@@ -25,7 +25,7 @@ HERO_RED = {
 HERO_GLODEN = {
     "天使": "images/hero/tianshi.png",
     "舞姬": "images/hero/wuji.png",
-    "舞姬": "images/hero/tieniangzi.png",
+    "铁娘子": "images/hero/tieniangzi.png",
 }
 
 

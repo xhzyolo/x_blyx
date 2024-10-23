@@ -160,15 +160,15 @@ class Model:
                 res_list = self.ctrl.find_pic_all(value, 0.99, tp=screen_shot)
                 for res in res_list:
                     # print("res:", res)
-                    if res[1] > cf.ZB_BOTTOM:
+                    if res[1] > cf.ZB_BOTTOM * self.ctrl.h_ratio:
                         continue
-                    if res[0] < cf.ZB_RIGHT1:
+                    if res[0] < cf.ZB_RIGHT1 * self.ctrl.w_ratio:
                         color_list[0] = key
                         continue
-                    if res[0] < cf.ZB_RIGHT2:
+                    if res[0] < cf.ZB_RIGHT2 * self.ctrl.w_ratio:
                         color_list[1] = key
                         continue
-                    if res[0] < cf.ZB_RIGHT3:
+                    if res[0] < cf.ZB_RIGHT3 * self.ctrl.w_ratio:
                         color_list[2] = key
                 if "空" not in color_list:
                     return color_list
@@ -186,13 +186,13 @@ class Model:
                 for key, value in cf.HERO_RED.items():
                     res = self.ctrl.find_pic(value, 0.95, tp=screen_shot)
                     if res:
-                        if res[0] < cf.ZB_RIGHT1 and color_list[0] == "红":
+                        if res[0] < cf.ZB_RIGHT1 * self.ctrl.w_ratio and color_list[0] == "红":
                             hero_list[0] = key
                             continue
-                        if res[0] < cf.ZB_RIGHT2 and color_list[1] == "红":
+                        if res[0] < cf.ZB_RIGHT2 * self.ctrl.w_ratio and color_list[1] == "红":
                             hero_list[1] = key
                             continue
-                        if res[0] < cf.ZB_RIGHT3 and color_list[2] == "红":
+                        if res[0] < cf.ZB_RIGHT3 * self.ctrl.w_ratio and color_list[2] == "红":
                             hero_list[2] = key
                 if color_list.count("红") == 3 - hero_list.count("空"):
                     break
@@ -202,13 +202,13 @@ class Model:
                 for key, value in cf.HERO_GLODEN.items():
                     res = self.ctrl.find_pic(value, 0.95, tp=screen_shot)
                     if res:
-                        if res[0] < cf.ZB_RIGHT1 and color_list[0] == "金":
+                        if res[0] < cf.ZB_RIGHT1 * self.ctrl.w_ratio and color_list[0] == "金":
                             hero_list[0] = key
                             continue
-                        if res[0] < cf.ZB_RIGHT2 and color_list[1] == "金":
+                        if res[0] < cf.ZB_RIGHT2 * self.ctrl.w_ratio and color_list[1] == "金":
                             hero_list[1] = key
                             continue
-                        if res[0] < cf.ZB_RIGHT3 and color_list[2] == "金":
+                        if res[0] < cf.ZB_RIGHT3 * self.ctrl.w_ratio and color_list[2] == "金":
                             hero_list[2] = key
                 if color_list.count("金") == 3 - hero_list.count("空") - hero_list.count("红"):
                     break
@@ -248,9 +248,9 @@ class Model:
                 self.ctrl.click(*cf.ZB_FANGQI)
                 time.sleep(0.2)
                 self.ctrl.click(*cf.ZB_QUEREN)
-                if ok_rect[0] < cf.ZB_RIGHT1:
+                if ok_rect[0] < cf.ZB_RIGHT1 * self.ctrl.w_ratio:
                     return True, 0
-                if ok_rect[0] < cf.ZB_RIGHT2:
+                if ok_rect[0] < cf.ZB_RIGHT2 * self.ctrl.w_ratio:
                     return True, 1
                 return True, 2
             if self.ctrl.find_pic("images/jb100.png|images/jb90.png|images/zhe.png", 0.9):
@@ -323,7 +323,7 @@ class Model:
 
                         if self.flag_rest:
                             self.flag_rest = False
-                            self.log_text("脚本好像被卡住，尝试重新启动游戏")
+                            self.log_text("多次未找到传送点，尝试重新启动游戏")
                             self.重启()
                             break
                     except Exception as e:
@@ -470,7 +470,7 @@ class Model:
         if cs_rect:
             # 不在城里
             # print("不在城里")
-            for i in range(5):
+            for i in range(10):
                 cs_rect = self.ctrl.find_pic("images/cs.png|images/cs2.png", 0.95)
                 if cs_rect:
                     self.ctrl.click(cs_rect[0], cs_rect[1])
@@ -484,7 +484,7 @@ class Model:
         else:
             # 在城里
             # print("在城里")
-            for i in range(5):
+            for i in range(10):
                 dcr_rect = self.ctrl.find_pic("images/dcr.png", 0.95)
                 if dcr_rect:
                     x = dcr_rect[0] - 5
