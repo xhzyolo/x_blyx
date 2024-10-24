@@ -2,6 +2,8 @@ DELAY_ZHAOMU = 2.2  # 招募延迟
 
 FUNC_LIST = ["传送", "移动", "等待", "回城", "重启"]  # 自定义脚本函数列表
 
+CS_PIC = "images/cs.png|images/cs1.png|images/cs2.png|images/cs3.png|images/cs4.png"
+
 
 COLOR_FILE = {
     "白": "images/color/white.png",
@@ -34,8 +36,6 @@ ZB_ZHAOMU = (227, 646)  # 招募按钮
 ZB_QUEREN = (290, 508)  # 确认按钮
 ZB_FANGQI = (225, 693)  # 放弃按钮
 ZB_HUICHENG = (410, 738)  # 回城按钮
-ZB_CAIDAN = (308, 20)  # 菜单按钮
-ZB_CHONGQI = (270, 270)  # 重启按钮'
 ZB_KONGBAI = (225, 832)  # 空白坐标
 
 # 抽卡边界

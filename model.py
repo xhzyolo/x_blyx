@@ -77,7 +77,7 @@ class Model:
         if self.aj is None:
             self.aj = self.__ajreg()
         self.ctrl = controller.Controller(self.__gethwnd(), self.aj)
-        if not self.ctrl.find_pic("images/zmui1.png", 0.9):
+        if not self.ctrl.find_pic("images/zmui1.png", 0.95):
             self.log_text("请进入招募界面再启动程序", "error")
 
         check = threading.Thread(target=self.run_check_thread, daemon=True)
@@ -94,7 +94,7 @@ class Model:
                 break
 
             for i in range(3):
-                if self.ctrl.find_pic("images/zmui1.png", 0.9) or self.ctrl.find_pic("images/zmui2.png", 0.9):
+                if self.ctrl.find_pic("images/zmui1.png", 0.95) or self.ctrl.find_pic("images/zmui2.png", 0.95):
                     break
                 else:
                     time.sleep(0.2)
@@ -115,7 +115,7 @@ class Model:
         count = 0
         while True:
             try:
-                if not self.ctrl.find_pic("images/jb100.png|images/jb90.png|images/zhe.png", 0.9):
+                if not self.ctrl.find_pic("images/jb100.png|images/jb90.png|images/zhe.png", 0.95):
                     # 执行放弃
                     self.log_text("执行放弃")
                     self.ctrl.click(*cf.ZB_FANGQI)
@@ -156,8 +156,8 @@ class Model:
         while True:
             screen_shot = self.ctrl.captrure_win32()
             # 是否在招募界面
-            if not self.ctrl.find_pic("images/zm.png", 0.9) and not self.ctrl.find_pic(
-                "images/jb100.png|images/jb90.png|images/zhe.png", 0.9
+            if not self.ctrl.find_pic("images/zm.png", 0.95) and not self.ctrl.find_pic(
+                "images/jb100.png|images/jb90.png|images/zhe.png", 0.95
             ):
                 time.sleep(0.2)
                 continue
@@ -232,6 +232,10 @@ class Model:
     # 招募
     def zhaomu(self, hero_list, is3s):
         """招募"""
+        # 如何不是金币则返回
+        if not self.ctrl.find_pic("images/jb100.png|images/jb90.png|images/zhe.png", 0.95):
+            return False, -1
+
         if is3s:
             self.log_text("三倍招募")
             self.ctrl.click(*cf.ZB_ZUIDA)
@@ -259,7 +263,7 @@ class Model:
                 if ok_rect[0] < cf.ZB_RIGHT2 * self.ctrl.w_ratio:
                     return True, 1
                 return True, 2
-            if self.ctrl.find_pic("images/jb100.png|images/jb90.png|images/zhe.png", 0.9):
+            if self.ctrl.find_pic("images/jb100.png|images/jb90.png|images/zhe.png", 0.95):
                 self.log_text("招募完成")
                 for index, hero in enumerate(hero_list):
                     if hero == "空":
@@ -362,7 +366,6 @@ class Model:
             self.log_text(f"默认模式：第{count}轮")
 
             if self.config_data["coins"]["refresh_mode"] == 1:
-
                 # 树精长老
                 if self.config_data["coins"]["树精长老enable"]:
                     self.传送(3, 3)
@@ -413,25 +416,10 @@ class Model:
                     self.移动("左下", 1)
                     self.移动("左", 0.7)
 
-                if self.flag_rest:
-                    self.flag_rest = False
-                    self.log_text("脚本好像被卡住，尝试重新启动游戏")
-                    self.重启()
-                    break
-
                 self.log_text("王座刷新")
                 self.传送(5, 1)
 
             elif self.config_data["coins"]["refresh_mode"] == 2:
-                # 树精领主
-                if self.config_data["coins"]["树精领主enable"]:
-                    self.传送(2, 1)
-                    self.移动("右", 1)
-                    self.移动("右上", 1)
-                    self.等待(self.config_data["coins"]["树精领主delay"])
-                    self.移动("左下", 1)
-                    self.移动("左", 0.7)
-
                 # 树精长老
                 if self.config_data["coins"]["树精长老enable"]:
                     self.传送(3, 3)
@@ -440,6 +428,15 @@ class Model:
                     self.等待(self.config_data["coins"]["树精长老delay"])
                     self.移动("左下", 1.7)
                     self.移动("左", 1.2)
+
+                # 树精领主
+                if self.config_data["coins"]["树精领主enable"]:
+                    self.传送(2, 1)
+                    self.移动("右", 1)
+                    self.移动("右上", 1)
+                    self.等待(self.config_data["coins"]["树精领主delay"])
+                    self.移动("左下", 1)
+                    self.移动("左", 0.7)
 
                 # 火焰石像
                 if (
@@ -481,7 +478,7 @@ class Model:
             # 不在城里
             # print("不在城里")
             for i in range(10):
-                cs_rect = self.ctrl.find_pic("images/cs.png|images/cs2.png", 0.95)
+                cs_rect = self.ctrl.find_pic(cf.CS_PIC, 0.95)
                 if cs_rect:
                     self.ctrl.click(cs_rect[0] / self.ctrl.w_ratio, cs_rect[1] / self.ctrl.h_ratio)
                     break
@@ -505,7 +502,7 @@ class Model:
                         x = bx_rect[0] / self.ctrl.w_ratio + 23
                         y = bx_rect[1] / self.ctrl.h_ratio + 64
                 if dcr_rect or bx_rect:
-                    if self.ctrl.find_pic("images/cs.png|images/cs2.png", 0.95):
+                    if self.ctrl.find_pic(cf.CS_PIC, 0.95):
                         self.ctrl.click(x, y)
                         break
                 self.log_text("未找到传送点")
@@ -523,7 +520,7 @@ class Model:
         self.ctrl.click(*cf.ZB_MAP[str(map)])
         time.sleep(3)
         for _ in range(20):
-            if self.ctrl.find_pic("images/cs.png|images/cs2.png", 0.95):
+            if self.ctrl.find_pic(cf.CS_PIC, 0.95):
                 break
             time.sleep(0.5)
 
@@ -542,17 +539,31 @@ class Model:
         self.ctrl.click(*cf.ZB_QUEREN)
         time.sleep(3)
         for _ in range(20):
-            if self.ctrl.find_pic("images/cs.png|images/cs2.png", 0.95):
+            if self.ctrl.find_pic(cf.CS_PIC, 0.95):
                 break
             time.sleep(0.5)
 
     # 重启游戏和脚本
     def 重启(self):
         self.log_text("执行重启")
-        self.ctrl.click(*cf.ZB_CAIDAN)
-        time.sleep(1)
-        self.ctrl.click(*cf.ZB_CHONGQI)
+        for _ in range(10):
+            cd_rect = self.ctrl.find_pic("images/cdan.png", 0.95)
+            if cd_rect:
+                self.ctrl.click(cd_rect[0] / self.ctrl.w_ratio, cd_rect[1] / self.ctrl.h_ratio)
+                time.sleep(1)
+                cxjr_rect = self.ctrl.find_pic("images/cxjr.png", 0.95)
+                if cxjr_rect:
+                    self.ctrl.click(cxjr_rect[0] / self.ctrl.w_ratio, cxjr_rect[1] / self.ctrl.h_ratio)
+                    break
+            self.log_text("未找到菜单按钮，重新尝试")
+            time.sleep(2)
+        else:
+            self.error_write("未找到菜单按钮")
+            self.log_text("多次未找到菜单按钮，重启失败", type="error")
+
+        # 等待重启延迟
         time.sleep(5)
+
         for _ in range(40):
             try:
                 hwnd = self.__gethwnd()
@@ -567,7 +578,7 @@ class Model:
             self.log_text("重启游戏时间过长，请检查", type="error")
 
         for _ in range(30):
-            if self.ctrl.find_pic("images/cs.png|images/cs2.png|images/liaotian.png", 0.95):
+            if self.ctrl.find_pic(cf.CS_PIC + "|images/liaotian.png", 0.95):
                 break
             time.sleep(0.5)
 

@@ -75,14 +75,19 @@ class Controller:
 
     def set_window_size(self):
         """设置窗口大小"""
+        w_width = 465
+        w_height = 850
         height = win32api.GetSystemMetrics(win32con.SM_CYSCREEN)
         # print(height)
-        if height >= 1024:
+        if height > 1080:
+            self.aj.SetWindowSize(self.hwnd, 558, 1020)
+            return 558 / w_width, 1020 / w_height
+        elif height >= 1024:
             self.aj.SetWindowSize(self.hwnd, 465, 850)
-            return 1, 1
+            return 465 / w_width, 850 / w_height
         else:
-            self.aj.SetWindowSize(self.hwnd, 336, 620)
-            return 336 / 465, 620 / 850
+            self.aj.SetWindowSize(self.hwnd, 372, 680)
+            return 372 / w_width, 680 / w_height
 
     # def __ajreg(self):
     #     """注册插件"""
@@ -190,7 +195,7 @@ class Controller:
         # cv2.imwrite("im_opencv.png", capture)
         return capture
 
-    def find_pic(self, template: str, threshold: float, tp=None):
+    def find_pic(self, template: str, threshold: float, tp=None, show_res=False):
         """找单图"""
         threshold = 1 - threshold
         template_list = template.split("|")
@@ -198,8 +203,10 @@ class Controller:
         for template in template_list:
             scr = cv2.imread(self.get_resource_path(template))
 
-            # 根据w_ratio 和 h_ratio 缩放模板图像
-            scr = cv2.resize(scr, (int(scr.shape[1] * self.w_ratio), int(scr.shape[0] * self.h_ratio)))
+            # 小程序菜单图标和重新进入小程序图标在任何分辨率不需要缩放
+            if "cd.png" not in template and "cxjr.png" not in template:
+                # 根据w_ratio 和 h_ratio 缩放模板图像
+                scr = cv2.resize(scr, (int(scr.shape[1] * self.w_ratio), int(scr.shape[0] * self.h_ratio)))
 
             for i in range(3):
                 if tp is not None:
@@ -211,7 +218,8 @@ class Controller:
             result = cv2.matchTemplate(scr, tp, cv2.TM_SQDIFF_NORMED)
             h, w = scr.shape[:2]
             min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
-            # print(template, 1 - min_val, min_loc)
+            if show_res:
+                print(template, 1 - min_val, min_loc)
             if min_val <= threshold:
                 coordinate = (
                     min_loc[0] + int(w / 2),
