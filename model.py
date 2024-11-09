@@ -76,7 +76,13 @@ class Model:
         # print("开始执行")
         if self.aj is None:
             self.aj = self.__ajreg()
-        self.ctrl = controller.Controller(self.__gethwnd(), self.aj)
+
+        hwnd = self.__gethwnd()
+        if hwnd is None:
+            self.log_text("未找到游戏窗口，程序停止", "error")
+            return
+        self.ctrl = controller.Controller(hwnd, self.aj)
+        
         if not self.ctrl.find_pic("images/zmui1.png", 0.95):
             self.log_text("请进入招募界面再启动程序", "error")
 
@@ -278,7 +284,12 @@ class Model:
         # print("开始执行刷金")
         if self.aj is None:
             self.aj = self.__ajreg()
-        self.ctrl = controller.Controller(self.__gethwnd(), self.aj)
+
+        hwnd = self.__gethwnd()
+        if hwnd is None:
+            self.log_text("未找到游戏窗口，程序停止", "error")
+            return
+        self.ctrl = controller.Controller(hwnd, self.aj)
 
         # 开始检测线程
         check = threading.Thread(target=self.run_coins_check_thread, daemon=True)

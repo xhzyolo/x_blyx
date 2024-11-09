@@ -26,6 +26,7 @@ class App:
         self.__create_window(title, 450, 550)
         self.__create_tabs()
         self.root.iconbitmap(self.get_resource_path("images/blyx.ico"))
+        self.root.resizable(False, False)  # 禁止最大化
         self.config = self.get_config()
 
         self.task_queue = multiprocessing.Queue()
@@ -34,6 +35,7 @@ class App:
         self.check_version()
 
         self.log_text("载入成功!")
+        self.log_text("QQ交流群：25476349")
 
     # 检查版本
     def check_version(self):
