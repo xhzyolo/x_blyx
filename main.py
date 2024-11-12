@@ -3,7 +3,7 @@ import multiprocessing
 from view import App
 
 
-VERSION = "1.07"
+VERSION = "1.08"
 
 if __name__ == "__main__":
     multiprocessing.freeze_support()

@@ -16,7 +16,7 @@ class Model:
         self.aj = None
         # {'cards': {'天使': True, '舞姬': True, '王子': True, '黑寡妇': False, '德鲁伊': False, '敖丙': False, '酒神': True, '圣骑': False, '李白': True, '卡卡西': True, 'cards_count': '0', 'h_stop': 'False'}, 'coins': {'树精领主enable': False, '树精领主delay': 0.5, '树精长老enable': True, '树精长老delay': 13.0, '火焰石像enable': False, '火焰石像delay': 1.0, '疯牛魔王enable': False, '疯牛魔王delay': 1.5, '剧毒蝎王enable': True, '剧毒蝎王delay': 0.5, 'refresh_mode': 1, 'coins_mode': 1}}
 
-    # 获取资源文件绝对路径
+    # 获取资源文件绝对路径 通常  C:\Windows\Temp\_MEIxxxx 或 C:\Users\用户名\AppData\Local\Temp\_MEIxxxx
     def get_resource_path(self, relative_path):
         """获取资源文件的绝对路径"""
         if hasattr(sys, "_MEIPASS"):
@@ -41,7 +41,7 @@ class Model:
             # print("插件注册失败:", e)
             pass
 
-        self.log_text("插件初始化失败！", "error")
+        self.log_text("错误：插件初始化失败！请尝试关闭杀毒软件。", "error")
 
     # 获取窗口句柄
     def __gethwnd(self):
@@ -81,8 +81,8 @@ class Model:
         if hwnd is None:
             self.log_text("未找到游戏窗口，程序停止", "error")
             return
-        self.ctrl = controller.Controller(hwnd, self.aj)
-        
+        self.ctrl = controller.Controller(hwnd, self.aj, self.task_queue)
+
         if not self.ctrl.find_pic("images/zmui1.png", 0.95):
             self.log_text("请进入招募界面再启动程序", "error")
 
@@ -289,7 +289,7 @@ class Model:
         if hwnd is None:
             self.log_text("未找到游戏窗口，程序停止", "error")
             return
-        self.ctrl = controller.Controller(hwnd, self.aj)
+        self.ctrl = controller.Controller(hwnd, self.aj, self.task_queue)
 
         # 开始检测线程
         check = threading.Thread(target=self.run_coins_check_thread, daemon=True)
@@ -580,7 +580,7 @@ class Model:
                 hwnd = self.__gethwnd()
                 if hwnd is None:
                     raise Exception
-                self.ctrl = controller.Controller(hwnd, self.aj)
+                self.ctrl = controller.Controller(hwnd, self.aj, self.task_queue)
                 break
             except:
                 time.sleep(0.5)

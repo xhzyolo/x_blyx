@@ -22,7 +22,7 @@ class App:
         self.label_count = {}
         self.config_data = {}
         self.p_running = None
-        title = f"x-blyx   V: {self.version}"
+        title = f"x-blyx  v{self.version}  免费使用  QQ交流群：25476349"
         self.__create_window(title, 450, 550)
         self.__create_tabs()
         self.root.iconbitmap(self.get_resource_path("images/blyx.ico"))
@@ -35,7 +35,7 @@ class App:
         self.check_version()
 
         self.log_text("载入成功!")
-        self.log_text("QQ交流群：25476349")
+        self.log_text("QQ群：25476349")
 
     # 检查版本
     def check_version(self):
@@ -336,20 +336,19 @@ class App:
 
     # 指令输入框初始化提示
     def com_text_insert(self, com_text):
-        com_text.insert("end", "#         注意\n")
-        com_text.insert("end", "#  1.指令每行一条\n")
-        com_text.insert("end", "#  2.#和//开头的不执行 \n")
-        com_text.insert("end", "#  3.传送需确保在传送旁边\n")
-        com_text.insert("end", "\n")
-        com_text.insert("end", "\n")
-        com_text.insert("end", "# 例：\n")
-        com_text.insert("end", "\n")
-        com_text.insert("end", "传送(2, 1)\n")
-        com_text.insert("end", "移动(右, 1)\n")
-        com_text.insert("end", "移动(右上, 1)\n")
-        com_text.insert("end", "等待(2)\n")
+        com_text.insert("end", "# 以下为刷F4的代码例子\n")
+        com_text.insert("end", "# 自己适当修改时间即可\n")
+        com_text.insert("end", "传送(8,2)\n")
+        com_text.insert("end", "移动(下,0.6)\n")
+        com_text.insert("end", "移动(左下,3.4)\n")
+        com_text.insert("end", "移动(下,0.1)\n")
+        com_text.insert("end", "等待(2.6)\n")
+        com_text.insert("end", "移动(左上,0.3)\n")
+        com_text.insert("end", "移动(左,3.1)\n")
+        com_text.insert("end", "等待(3.1)\n")
+        com_text.insert("end", "移动(右下,2.8)\n")
+        com_text.insert("end", "等待(2.5)\n")
         com_text.insert("end", "回城()\n")
-        com_text.insert("end", "重启()\n")
 
     # 允许输入数字
     def allow_only_digits(self, event):

@@ -65,13 +65,21 @@ def non_max_suppression(boxes, overlapThresh=0.3):
 
 
 class Controller:
-    def __init__(self, HWND, AJ) -> None:
+    def __init__(self, HWND, AJ, task_queue) -> None:
         self.aj = AJ
+        self.task_queue = task_queue
         self.hwnd = HWND
 
         self.w_ratio, self.h_ratio = self.set_window_size()
         # print("窗口比例：", self.w_ratio, self.h_ratio)
         self.__kqhoutai()
+
+    # 错误对话框提示
+    def log_text(self, msg: str, type="log"):
+        """错误对话框提示"""
+        self.task_queue.put({"msg": msg, "type": type}, block=True)
+        if type == "error":
+            time.sleep(2)
 
     def set_window_size(self):
         """设置窗口大小"""
@@ -203,6 +211,9 @@ class Controller:
         for template in template_list:
             scr = cv2.imread(self.get_resource_path(template))
 
+            if scr is None:
+                self.log_text("错误：目标图片文件缺失", "error")
+
             # 小程序菜单图标和重新进入小程序图标在任何分辨率不需要缩放
             if "cd.png" not in template and "cxjr.png" not in template:
                 # 根据w_ratio 和 h_ratio 缩放模板图像
@@ -247,6 +258,9 @@ class Controller:
         threshold = 1 - threshold
         # scr = cv2.imread(template, cv2.IMREAD_UNCHANGED) 这种方法无法程序出错
         scr = cv2.imread(self.get_resource_path(template))
+
+        if scr is None:
+            self.log_text("错误：目标图片文件缺失", "error")
 
         # 根据w_ratio 和 h_ratio 缩放模板图像
         scr = cv2.resize(scr, (int(scr.shape[1] * self.w_ratio), int(scr.shape[0] * self.h_ratio)))
