@@ -327,4 +327,7 @@ class Controller:
 #     ARegJ = ctypes.windll.LoadLibrary(os.getcwd() + "\\ARegJ64.dll")
 #     ARegJ.SetDllPathW(os.getcwd() + "\\AoJia64.dll", 0)
 #     AJ = Dispatch("AoJia.AoJiaD")
-#     c = Controller(hwnd, AJ)
+#     c = Controller(hwnd, AJ,None)
+#     tp = cv2.imread(r"C:\Users\Administrator\Desktop\1.png")
+#     res = c.find_pic("images/hero/jiushen.png", 0.9, tp=tp)
+#     print(res)
