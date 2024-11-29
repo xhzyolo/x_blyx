@@ -1,6 +1,6 @@
 import ctypes
 import sys, os, time
-import win32gui, win32ui, win32con, win32api
+import win32gui, win32ui, win32con, win32api, win32print
 import cv2
 import numpy as np
 
@@ -85,17 +85,29 @@ class Controller:
         """设置窗口大小"""
         w_width = 465
         w_height = 850
+
+        # 获取原始大小
+        hDC = win32gui.GetDC(0)
+        # wide = win32print.GetDeviceCaps(hDC, win32con.DESKTOPHORZRES)
+        high = win32print.GetDeviceCaps(hDC, win32con.DESKTOPVERTRES)
+        # print(wide, high)
+
+        # 获取缩放后的大小
         height = win32api.GetSystemMetrics(win32con.SM_CYSCREEN)
         # print(height)
+
+        # 获取绽放比例
+        rect_ratio = round(high / height, 2)
+
         if height > 1080:
             self.aj.SetWindowSize(self.hwnd, 558, 1020)
-            return 558 / w_width, 1020 / w_height
+            return round(558 / w_width * rect_ratio, 2), round(1020 / w_height * rect_ratio, 2)
         elif height >= 1024:
             self.aj.SetWindowSize(self.hwnd, 465, 850)
-            return 465 / w_width, 850 / w_height
+            return round(465 / w_width * rect_ratio, 2), round(850 / w_height * rect_ratio, 2)
         else:
             self.aj.SetWindowSize(self.hwnd, 372, 680)
-            return 372 / w_width, 680 / w_height
+            return round(372 / w_width * rect_ratio, 2), round(680 / w_height * rect_ratio, 2)
 
     # def __ajreg(self):
     #     """注册插件"""
