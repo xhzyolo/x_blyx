@@ -14,6 +14,7 @@ class Model:
         self.config_data = config_data
         self.flag_rest = False
         self.aj = None
+        self.threshold = 0.99  # 英雄颜色识别精度
         # {'cards': {'天使': True, '舞姬': True, '王子': True, '黑寡妇': False, '德鲁伊': False, '敖丙': False, '酒神': True, '圣骑': False, '李白': True, '卡卡西': True, 'cards_count': '0', 'h_stop': 'False'}, 'coins': {'树精领主enable': False, '树精领主delay': 0.5, '树精长老enable': True, '树精长老delay': 13.0, '火焰石像enable': False, '火焰石像delay': 1.0, '疯牛魔王enable': False, '疯牛魔王delay': 1.5, '剧毒蝎王enable': True, '剧毒蝎王delay': 0.5, 'refresh_mode': 1, 'coins_mode': 1}}
 
     # 获取资源文件绝对路径 通常  C:\Windows\Temp\_MEIxxxx 或 C:\Users\用户名\AppData\Local\Temp\_MEIxxxx
@@ -159,6 +160,7 @@ class Model:
     def get_color_list(self):
         """获取颜色列表"""
         color_list = ["空", "空", "空"]
+        i = 1
         while True:
             screen_shot = self.ctrl.captrure_win32()
             # 是否在招募界面
@@ -169,7 +171,7 @@ class Model:
                 continue
             for key, value in cf.COLOR_FILE.items():
                 # print("key:", key)
-                res_list = self.ctrl.find_pic_all(value, 0.99, tp=screen_shot)
+                res_list = self.ctrl.find_pic_all(value, self.threshold, tp=screen_shot)
                 for res in res_list:
                     # print("res:", res)
                     if res[1] > cf.ZB_BOTTOM * self.ctrl.h_ratio:
@@ -184,6 +186,14 @@ class Model:
                         color_list[2] = key
                 if "空" not in color_list:
                     return color_list
+
+            if i > 10:
+                if self.threshold == 0.99:
+                    self.log_text("未识别到英雄，尝试降低识别精度")
+                    self.threshold = 0.98
+                else:
+                    self.log_text("未识别到英雄，程序退出", "error")
+            i += 1
 
     # 获取英雄列表
     def get_hero_list(self, color_list: list):
@@ -258,7 +268,7 @@ class Model:
         while True:
             self.ctrl.click(*cf.ZB_QUEREN)
             time.sleep(0.5)
-            ok_rect = self.ctrl.find_pic("images/ok.png", 0.99)
+            ok_rect = self.ctrl.find_pic("images/ok.png|images/ok2.png", self.threshold)
             if ok_rect:
                 self.log_text("执行放弃")
                 self.ctrl.click(*cf.ZB_FANGQI)

@@ -339,7 +339,33 @@ class Controller:
 #     ARegJ = ctypes.windll.LoadLibrary(os.getcwd() + "\\ARegJ64.dll")
 #     ARegJ.SetDllPathW(os.getcwd() + "\\AoJia64.dll", 0)
 #     AJ = Dispatch("AoJia.AoJiaD")
-#     c = Controller(hwnd, AJ,None)
-#     tp = cv2.imread(r"C:\Users\Administrator\Desktop\1.png")
-#     res = c.find_pic("images/hero/jiushen.png", 0.9, tp=tp)
+#     c = Controller(hwnd, AJ, None)
+#     tp = cv2.imread(r"C:\Users\Administrator\Desktop\4.png")
+#     res = c.find_pic("images/ok2.png", 0.98, tp=tp)
 #     print(res)
+
+#     import config as cf
+
+#     color_list = ["空", "空", "空"]
+#     while True:
+#         screen_shot = cv2.imread(r"C:\Users\Administrator\Desktop\2.png")
+#         # 是否在招募界面
+#         for key, value in cf.COLOR_FILE.items():
+#             # print("key:", key)
+#             res_list = c.find_pic_all(value, 0.99, tp=screen_shot)
+#             print("坐标", res_list)
+#             for res in res_list:
+#                 # print("res:", res)
+#                 if res[1] > cf.ZB_BOTTOM * c.h_ratio:
+#                     continue
+#                 if res[0] < cf.ZB_RIGHT1 * c.w_ratio:
+#                     color_list[0] = key
+#                     continue
+#                 if res[0] < cf.ZB_RIGHT2 * c.w_ratio:
+#                     color_list[1] = key
+#                     continue
+#                 if res[0] < cf.ZB_RIGHT3 * c.w_ratio:
+#                     color_list[2] = key
+#             if "空" not in color_list:
+#                 print("英雄：", color_list)
+#                 break
