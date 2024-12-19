@@ -341,7 +341,6 @@ class App:
         com_text.insert("end", "传送(8,2)\n")
         com_text.insert("end", "移动(下,0.6)\n")
         com_text.insert("end", "移动(左下,3.4)\n")
-        com_text.insert("end", "移动(下,0.1)\n")
         com_text.insert("end", "等待(2.6)\n")
         com_text.insert("end", "移动(左上,0.3)\n")
         com_text.insert("end", "移动(左,3.1)\n")

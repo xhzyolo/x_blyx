@@ -248,7 +248,7 @@ class Model:
     # 招募
     def zhaomu(self, hero_list, is3s):
         """招募"""
-        # 如何不是金币则返回
+        # 如果不是金币则返回
         if not self.ctrl.find_pic("images/jb100.png|images/jb90.png|images/zhe.png", 0.95):
             return False, -1
 
@@ -333,10 +333,13 @@ class Model:
                 if script.startswith(("#", "//")):
                     continue
 
-                # 获取函数名和参数
-                func_parts = script.split("(")
-                func_name = func_parts[0].strip()
-                args = func_parts[1].rstrip(")").split(",")
+                try:
+                    # 获取函数名和参数
+                    func_parts = script.split("(")
+                    func_name = func_parts[0].strip()
+                    args = func_parts[1].rstrip(")").split(",")
+                except Exception as e:
+                    self.log_text(f"自定义指令有误，程序停止", type="error")
 
                 if func_name in cf.FUNC_LIST:
                     try:
@@ -498,25 +501,28 @@ class Model:
         if cs_rect:
             # 不在城里
             # print("不在城里")
-            for i in range(10):
+            self.log_text("当前在野外")
+            for i in range(20):
                 cs_rect = self.ctrl.find_pic(cf.CS_PIC, 0.95)
                 if cs_rect:
                     self.ctrl.click(cs_rect[0] / self.ctrl.w_ratio, cs_rect[1] / self.ctrl.h_ratio)
                     break
-                self.log_text("未找到传送点")
+                if i > 5 and i % 2 == 0:
+                    self.log_text("未找到传送点")
                 self.ctrl.click(*cf.ZB_KONGBAI)
-                time.sleep(2)
+                time.sleep(1)
             else:
                 self.flag_rest = True
                 return
         else:
             # 在城里
             # print("在城里")
-            for i in range(10):
-                dcr_rect = self.ctrl.find_pic("images/dcr.png", 0.95)
+            self.log_text("当前在城内")
+            for i in range(20):
+                dcr_rect = self.ctrl.find_pic("images/xlynpc.png", 0.95)
                 if dcr_rect:
-                    x = dcr_rect[0] / self.ctrl.w_ratio - 5
-                    y = dcr_rect[1] / self.ctrl.h_ratio + 110
+                    x = dcr_rect[0] / self.ctrl.w_ratio
+                    y = dcr_rect[1] / self.ctrl.h_ratio + 70
                 else:
                     bx_rect = self.ctrl.find_pic("images/bx.png", 0.95)
                     if bx_rect:
@@ -526,9 +532,10 @@ class Model:
                     if self.ctrl.find_pic(cf.CS_PIC, 0.95):
                         self.ctrl.click(x, y)
                         break
-                self.log_text("未找到传送点")
+                if i > 5 and i % 2 == 0:
+                    self.log_text("未找到传送点")
                 self.ctrl.click(*cf.ZB_KONGBAI)
-                time.sleep(2)
+                time.sleep(1)
             else:
                 self.flag_rest = True
                 return
@@ -558,11 +565,12 @@ class Model:
         self.ctrl.click(*cf.ZB_HUICHENG)
         time.sleep(0.5)
         self.ctrl.click(*cf.ZB_QUEREN)
+        self.ctrl.click(*cf.ZB_QUEREN)
         time.sleep(3)
-        for _ in range(20):
-            if self.ctrl.find_pic(cf.CS_PIC, 0.95):
-                break
-            time.sleep(0.5)
+        # for _ in range(20):
+        #     if self.ctrl.find_pic(cf.CS_PIC, 0.95):
+        #         break
+        #     time.sleep(0.5)
 
     # 重启游戏和脚本
     def 重启(self):

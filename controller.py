@@ -178,7 +178,6 @@ class Controller:
         通过win32方式截图
         """
         ctypes.windll.user32.SetProcessDPIAware()
-        # hwnd = win32gui.FindWindow(None, "百炼英雄")
 
         rect = win32gui.GetWindowRect(self.hwnd)
 
@@ -227,7 +226,7 @@ class Controller:
                 self.log_text("错误：目标图片文件缺失", "error")
 
             # 小程序菜单图标和重新进入小程序图标在任何分辨率不需要缩放
-            if "cd.png" not in template and "cxjr.png" not in template:
+            if "cdan.png" not in template and "cxjr.png" not in template:
                 # 根据w_ratio 和 h_ratio 缩放模板图像
                 scr = cv2.resize(scr, (int(scr.shape[1] * self.w_ratio), int(scr.shape[0] * self.h_ratio)))
 
@@ -238,7 +237,11 @@ class Controller:
             else:
                 return
 
-            result = cv2.matchTemplate(scr, tp, cv2.TM_SQDIFF_NORMED)
+            try:
+                result = cv2.matchTemplate(scr, tp, cv2.TM_SQDIFF_NORMED)
+            except Exception as e:
+                # print(e)
+                self.log_text("图片资源错误，请检查游戏是否正常运行", "error")
             h, w = scr.shape[:2]
             min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
             if show_res:
@@ -335,13 +338,15 @@ class Controller:
 
 
 # if __name__ == "__main__":
+#     import config as cf
+
 #     hwnd = win32gui.FindWindow(None, "百炼英雄")
 #     ARegJ = ctypes.windll.LoadLibrary(os.getcwd() + "\\ARegJ64.dll")
 #     ARegJ.SetDllPathW(os.getcwd() + "\\AoJia64.dll", 0)
 #     AJ = Dispatch("AoJia.AoJiaD")
 #     c = Controller(hwnd, AJ, None)
-#     tp = cv2.imread(r"C:\Users\Administrator\Desktop\4.png")
-#     res = c.find_pic("images/ok2.png", 0.98, tp=tp)
+#     # tp = cv2.imread(r"C:\Users\Administrator\Desktop\4.png")
+#     res = c.find_pic(cf.CS_PIC, 0.95)
 #     print(res)
 
 #     import config as cf

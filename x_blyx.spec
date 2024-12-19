@@ -12,7 +12,7 @@ a = Analysis(
         ('images\\blyx.ico', 'images'),
         ('images\\cgzm.png', 'images'), 
         ('images\\back.png', 'images'), 
-        ('images\\dcr.png', 'images'), 
+        ('images\\xlynpc.png', 'images'), 
         ('images\\bx.png', 'images'), 
         ('images\\cdan.png', 'images'), 
         ('images\\cxjr.png', 'images'), 

@@ -37,6 +37,7 @@ ZB_QUEREN = (290, 508)  # 确认按钮
 ZB_FANGQI = (225, 693)  # 放弃按钮
 ZB_HUICHENG = (410, 738)  # 回城按钮
 ZB_KONGBAI = (225, 832)  # 空白坐标
+ZB_EXITZM = (75, 790)  # 退出招募界面
 
 # 抽卡边界
 ZB_RIGHT1 = 120
