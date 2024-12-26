@@ -15,21 +15,16 @@ class Model:
         self.flag_rest = False
         self.aj = None
         self.threshold = 0.99  # 英雄颜色识别精度
-        # {'cards': {'天使': True, '舞姬': True, '王子': True, '黑寡妇': False, '德鲁伊': False, '敖丙': False, '酒神': True, '圣骑': False, '李白': True, '卡卡西': True, 'cards_count': '0', 'h_stop': 'False'}, 'coins': {'树精领主enable': False, '树精领主delay': 0.5, '树精长老enable': True, '树精长老delay': 13.0, '火焰石像enable': False, '火焰石像delay': 1.0, '疯牛魔王enable': False, '疯牛魔王delay': 1.5, '剧毒蝎王enable': True, '剧毒蝎王delay': 0.5, 'refresh_mode': 1, 'coins_mode': 1}}
 
-    # 获取资源文件绝对路径 通常  C:\Windows\Temp\_MEIxxxx 或 C:\Users\用户名\AppData\Local\Temp\_MEIxxxx
     def get_resource_path(self, relative_path):
         """获取资源文件的绝对路径"""
         if hasattr(sys, "_MEIPASS"):
-            # PyInstaller 创建的临时目录
             base_path = sys._MEIPASS
         else:
-            # 开发环境中的当前目录
             base_path = os.path.abspath(".")
 
         return os.path.join(base_path, relative_path)
 
-    # 插件注册
     def __ajreg(self):
         """注册插件"""
         try:
@@ -39,7 +34,6 @@ class Model:
             if AJ.VerS() != 0:
                 return AJ
         except Exception as e:
-            # print("插件注册失败:", e)
             pass
 
         self.log_text("错误：插件初始化失败！请尝试关闭杀毒软件。", "error")
@@ -49,7 +43,6 @@ class Model:
         """获取窗口句柄"""
         hwnd = win32gui.FindWindow(None, "百炼英雄")
         if not hwnd:
-            # self.log_text("未找到游戏窗口，程序停止", "error")
             return None
         return hwnd
 
@@ -74,7 +67,6 @@ class Model:
     # 抽卡主线程
     def run_cards(self):
         """主线程"""
-        # print("开始执行")
         if self.aj is None:
             self.aj = self.__ajreg()
 
@@ -118,12 +110,10 @@ class Model:
     # 抽卡逻辑线程
     def run_cards_thread(self):
         """主逻辑"""
-        # 判断颜色
         count = 0
         while True:
             try:
                 if not self.ctrl.find_pic("images/jb100.png|images/jb90.png|images/zhe.png", 0.95):
-                    # 执行放弃
                     self.log_text("执行放弃")
                     self.ctrl.click(*cf.ZB_FANGQI)
                     time.sleep(0.3)
@@ -241,14 +231,12 @@ class Model:
         for hero in hero_list:
             if hero == "空":
                 continue
-            # 如果有配置文件则三倍
             if self.config_data["cards"][hero] or self.config_data["cards"][hero] == "True":
                 return True
 
     # 招募
     def zhaomu(self, hero_list, is3s):
         """招募"""
-        # 如果不是金币则返回
         if not self.ctrl.find_pic("images/jb100.png|images/jb90.png|images/zhe.png", 0.95):
             return False, -1
 
@@ -291,7 +279,6 @@ class Model:
     # 刷金主线程
     def run_coins(self):
         """主线程"""
-        # print("开始执行刷金")
         if self.aj is None:
             self.aj = self.__ajreg()
 
@@ -316,13 +303,10 @@ class Model:
     def run_coins_check_thread(self):
         pass
 
-    # {'cards': {'天使': True, '舞姬': True, '王子': True, '黑寡妇': False, '德鲁伊': False, '敖丙': False, '酒神': True, '圣骑': False, '李白': True, '卡卡西': True, 'cards_count': '0', 'h_stop': 'False'}, 'coins': {'树精领主enable': False, '树精领主delay': 0.5, '树
-    # 精长老enable': True, '树精长老delay': 13.0, '火焰石像enable': False, '火焰石像delay': 1.0, '疯牛魔王enable': False, '疯牛魔王delay': 1.5, '剧毒蝎王enable': True, '剧毒蝎王delay': 0.5, 'refresh_mode': 1, 'coins_mode': 1}}
     # 自定义刷金模式
     def run_coins_custom_thread(self):
         count = 1
         custom_script = self.config_data["script"]
-        # print(custom_script)
         custom_script = [x for x in custom_script if not x.startswith(("#", "//"))]
         if len(custom_script) == 0:
             self.log_text("自定义模式：未配置脚本，程序停止", type="error")
@@ -334,7 +318,6 @@ class Model:
                     continue
 
                 try:
-                    # 获取函数名和参数
                     func_parts = script.split("(")
                     func_name = func_parts[0].strip()
                     args = func_parts[1].rstrip(")").split(",")
@@ -355,7 +338,6 @@ class Model:
                                 arg = arg
                             _args.append(arg)
 
-                        # print(f"执行：{func_name}{_args}")
                         if len(_args) and _args[0]:
                             func(*_args)
                         else:
@@ -367,7 +349,6 @@ class Model:
                             self.重启()
                             break
                     except Exception as e:
-                        # print("错误：", e)
                         self.error_write(e)
                         self.log_text(f"第{i+1}行脚本有误，请检查", type="error")
                         continue
@@ -500,7 +481,6 @@ class Model:
         cs_rect = self.ctrl.find_pic("images/back.png", 0.95)
         if cs_rect:
             # 不在城里
-            # print("不在城里")
             self.log_text("当前在野外")
             for i in range(20):
                 cs_rect = self.ctrl.find_pic(cf.CS_PIC, 0.95)
@@ -516,7 +496,6 @@ class Model:
                 return
         else:
             # 在城里
-            # print("在城里")
             self.log_text("当前在城内")
             for i in range(20):
                 dcr_rect = self.ctrl.find_pic("images/xlynpc.png", 0.95)
@@ -567,10 +546,6 @@ class Model:
         self.ctrl.click(*cf.ZB_QUEREN)
         self.ctrl.click(*cf.ZB_QUEREN)
         time.sleep(3)
-        # for _ in range(20):
-        #     if self.ctrl.find_pic(cf.CS_PIC, 0.95):
-        #         break
-        #     time.sleep(0.5)
 
     # 重启游戏和脚本
     def 重启(self):

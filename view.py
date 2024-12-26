@@ -10,7 +10,7 @@ from tkinter import messagebox
 from model import Model
 
 
-BASE_URL = "https://xzdwz.com/api/blyx/blyx"
+BASE_URL = ""
 
 
 class App:
@@ -26,13 +26,15 @@ class App:
         self.__create_window(title, 450, 550)
         self.__create_tabs()
         self.root.iconbitmap(self.get_resource_path("images/blyx.ico"))
-        self.root.resizable(False, False)  # 禁止最大化
+        # self.root.resizable(False, False)  # 禁止改变窗口大小
         self.config = self.get_config()
 
         self.task_queue = multiprocessing.Queue()
-        # 注册窗口关闭处理函数
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
-        self.check_version()
+
+        # 是否检查版本
+        if BASE_URL:
+            self.check_version()
 
         self.log_text("载入成功!")
         self.log_text("QQ群：25476349")
@@ -67,10 +69,8 @@ class App:
     def get_resource_path(self, relative_path):
         """获取资源文件的绝对路径"""
         if hasattr(sys, "_MEIPASS"):
-            # PyInstaller 创建的临时目录
             base_path = sys._MEIPASS
         else:
-            # 开发环境中的当前目录
             base_path = os.path.abspath(".")
 
         return os.path.join(base_path, relative_path)
@@ -162,9 +162,6 @@ class App:
     # 选项卡一抽卡结果区域
     def tab_card_frame_res(self, frame):
         """抽卡结果区域ui"""
-
-        # frame1 = ttk.Frame(frame)
-        # frame1.pack(side="top", anchor="n", fill="x", padx=5)
         self.label2 = tk.Label(frame, text="抽卡次数")
         self.label2.grid(row=0, column=0, padx=(30, 0), pady=5)
         self.entry = tk.Entry(frame, width=5)
@@ -176,8 +173,6 @@ class App:
         self.label3 = tk.Label(frame, text="(0为无限次)")
         self.label3.grid(row=0, column=2, pady=5)
 
-        # frame2 = ttk.Frame(frame)
-        # frame2.pack(fill="x", padx=13)
         self.check_h_stop_var = tk.BooleanVar()
         self.check_h_stop = tk.Checkbutton(frame, text="遇到红色停止", variable=self.check_h_stop_var)
         self.check_h_stop.grid(row=1, column=0, columnspan=2, pady=5)
@@ -189,8 +184,6 @@ class App:
         self.label3.grid(row=2, column=1, padx=(10, 0), pady=(20, 10))
 
         # 第三区域第二行
-        # frame1 = ttk.Frame(frame)
-        # frame1.pack(side="top", anchor="n", padx=10, pady=5)
         self.label_show["天使"] = tk.Label(frame, text="天使 0")
         self.label_show["天使"].grid(row=3, column=0, padx=(20, 0), pady=5)
         self.label_count["天使"] = 0
@@ -214,8 +207,6 @@ class App:
         self.label_show["德鲁伊"].grid(row=4, column=2, pady=2)
         self.label_count["德鲁伊"] = 0
 
-        # frame2 = ttk.Frame(frame)
-        # frame2.pack(side="top", anchor="n", padx=10, pady=(10, 0))
         self.label_show["敖丙"] = tk.Label(frame, text="敖丙 0")
         self.label_show["敖丙"].grid(row=5, column=0, padx=(20, 0), pady=2)
         self.label_count["敖丙"] = 0
@@ -224,8 +215,6 @@ class App:
         self.label_show["酒神"].grid(row=5, column=1, pady=2)
         self.label_count["酒神"] = 0
 
-        # frame3 = ttk.Frame(frame)
-        # frame3.pack(side="top", anchor="n", padx=10, pady=(0, 5))
         self.label_show["圣骑"] = tk.Label(frame, text="圣骑 0")
         self.label_show["圣骑"].grid(row=5, column=2, pady=2)
         self.label_count["圣骑"] = 0
@@ -237,8 +226,6 @@ class App:
         self.label_show["卡卡西"].grid(row=6, column=1, pady=2)
         self.label_count["卡卡西"] = 0
 
-        # frame4 = ttk.Frame(frame)
-        # frame4.pack(side="top", anchor="n", padx=10, pady=(10, 5))
         self.label_show["总次数"] = tk.Label(frame, text="总次数 0")
         self.label_show["总次数"].grid(row=7, column=1, pady=(20, 2))
         self.label_count["总次数"] = 0
@@ -280,7 +267,6 @@ class App:
         self.boss_entry_list = []
 
         for i, (text, var) in enumerate(zip(checkboxes, self.boss_chk_vars)):
-            # print(self.config["coins"][text]["enable"])
             chk = tk.Checkbutton(self.frame_default, text=text, variable=var)
             chk.grid(row=i, column=0, pady=5)
             label_boss = tk.Label(self.frame_default, text="击杀时间(秒):")
@@ -302,24 +288,6 @@ class App:
 
         radio_ref2 = tk.Radiobutton(self.frame_default, text="重启刷新", variable=self.ref_mode, value=2)
         radio_ref2.grid(row=len(checkboxes) + 1, column=2, pady=10)
-
-        # lal_hc = tk.Label(self.frame_default, text="回城时间")
-        # lal_hc.grid(row=len(checkboxes) + 2, column=0, pady=0)
-        # self.hc_delay = tk.Entry(self.frame_default, width=5)
-        # self.hc_delay.insert(0, "5")
-        # self.hc_delay.grid(row=len(checkboxes) + 3, column=0, pady=0)
-
-        # lal_cs = tk.Label(self.frame_default, text="传送时间")
-        # lal_cs.grid(row=len(checkboxes) + 2, column=1, pady=0)
-        # self.cs_delay = tk.Entry(self.frame_default, width=5)
-        # self.cs_delay.insert(0, "6")
-        # self.cs_delay.grid(row=len(checkboxes) + 3, column=1, pady=0)
-
-        # lal_cq = tk.Label(self.frame_default, text="重启时间")
-        # lal_cq.grid(row=len(checkboxes) + 2, column=2, pady=0)
-        # self.cq_delay = tk.Entry(self.frame_default, width=5)
-        # self.cq_delay.insert(0, "12")
-        # self.cq_delay.grid(row=len(checkboxes) + 3, column=2, pady=0)
 
     # 选项卡二（自定义指令）
     def tab_coin_custom(self, frame):
@@ -364,7 +332,6 @@ class App:
     def on_tab_change(self, event):
         current_tab_index = self.tab_control.index(self.tab_control.select())
         self.current_tab = current_tab_index
-        # print("当前选项卡索引:", current_tab_index)
 
     # 模式切换
     def radio_changed(self):
@@ -404,8 +371,6 @@ class App:
     # 获取队列中的数据
     def get_queue_data(self):
         """循环获取队列中的数据"""
-        # while not self.task_queue.empty():
-        # task_data = self.task_queue.get(block=True)
         while True:
             try:
                 task_data = self.task_queue.get_nowait()
@@ -461,7 +426,6 @@ class App:
             self.log_text("开始执行")
             self.start_scripts()
             self.get_queue_data()
-            # 这里添加执行逻辑
             model = Model(self.task_queue, self.config_data)
             if self.current_tab == 0:
                 self.p_running = multiprocessing.Process(target=model.run_cards)
@@ -483,10 +447,6 @@ class App:
     def on_closing(self):
         """程序退出时执行"""
         if self.p_running is not None and self.p_running.is_alive():
-            # self.task_queue.put(True)  # 发送停止信号 目前不需要向model发送停止信息，不需要model控制关闭进程
-            # join(timeout=5)：等待子进程结束，最多等待5秒钟。如果在这段时间内子进程结束，则 join() 方法返回，程序继续执行；如果5秒钟后子进程仍未结束，则 join() 方法超时返回，程序继续执行下一步。
-            # terminate()：如果 join() 方法超时返回，并且子进程仍然存活，则调用 terminate() 方法立即终止子进程。这通常用于强制结束那些不响应停止信号的子进程。
-            # 通过这种方式，可以确保在窗口关闭时尽量优雅地结束子进程，并且在必要时强制终止它们，从而避免遗留问题。
             self.p_running.join(timeout=1)
             if self.p_running.is_alive():
                 self.p_running.terminate()
@@ -510,21 +470,6 @@ class App:
     def on_click(self, event):
         event.widget.focus_set()
 
-    # def on_click(self, event):
-    #     """点击事件处理函数"""
-    #     # 检查点击事件是否发生在 Entry 组件之外
-    #     entry_list = [self.entry] + self.boss_entry_list
-    #     if event.widget != self.entry and event.widget not in self.boss_entry_list:
-    #         # self.root.focus_force()  # 强制让 Entry 组件失去焦点
-    #         self.text.focus_set()
-    #         try:
-    #             cards_count = int(self.entry.get())
-    #             self.entry.delete(0, tk.END)
-    #             self.entry.insert(0, cards_count)
-    #         except ValueError:
-    #             self.entry.delete(0, tk.END)
-    #             self.entry.insert(0, "0")
-
     # 读取配置文件
     def get_config(self) -> configparser.ConfigParser:
         """读取配置文件"""
@@ -547,19 +492,6 @@ class App:
                 self.ref_mode.set(config["coins"]["refresh_mode"])
                 self.rad_mode_var.set(config["coins"]["coins_mode"])
 
-                # # 刷金时间配置
-                # if config.has_option("coins", "hc_delay"):
-                #     self.hc_delay.delete(0, tk.END)
-                #     self.hc_delay.insert(0, config["coins"]["hc_delay"])
-
-                # if config.has_option("coins", "cs_delay"):
-                #     self.cs_delay.delete(0, tk.END)
-                #     self.cs_delay.insert(0, config["coins"]["cs_delay"])
-
-                # if config.has_option("coins", "cq_delay"):
-                #     self.cq_delay.delete(0, tk.END)
-                #     self.cq_delay.insert(0, config["coins"]["cq_delay"])
-
                 # UI禁用
                 if self.rad_mode_var.get() == 1:
                     for combo in self.frame_default.children.values():
@@ -577,15 +509,12 @@ class App:
                     content = f.read()
 
                 if content.strip():
-                    # 文件不为空，加载JSON数据
-                    # print("读取配置文件成功")
                     script_list = json.loads(content)
                     self.com_text.delete(1.0, tk.END)
                     for line in script_list:
                         self.com_text.insert(tk.END, line + "\n")
 
             except Exception as e:
-                # print(e)
                 pass
         return config
 
@@ -623,24 +552,6 @@ class App:
         config_coins["refresh_mode"] = self.ref_mode.get()
         config_coins["coins_mode"] = self.rad_mode_var.get()
 
-        # # 刷金默认时间配置
-        # try:
-        #     hc_delay = float(self.hc_delay.get())
-        # except:
-        #     hc_delay = 0
-        # try:
-        #     cs_delay = float(self.cs_delay.get())
-        # except:
-        #     cs_delay = 0
-        # try:
-        #     cq_delay = float(self.cq_delay.get())
-        # except:
-        #     cq_delay = 0
-
-        # config_coins["hc_delay"] = hc_delay
-        # config_coins["cs_delay"] = cs_delay
-        # config_coins["cq_delay"] = cq_delay
-
         # 刷金自定义配置
         for line in self.com_text.get("1.0", "end-1c").splitlines():
             if line.strip() == "":
@@ -659,23 +570,14 @@ class App:
         with open("script.json", "w", encoding="utf-8") as f:
             json.dump(config_custom, f, ensure_ascii=False)
 
-        # 用于传给model
         self.config_data["cards"] = config_cards
         self.config_data["cards"].update(config["config"])
 
         self.config_data["coins"] = config_coins
         self.config_data["script"] = config_custom
 
-        # print(self.config_data)
-
     # 显示错误消息框
     def show_error(self, msg):
         """显示错误消息框"""
         self.stop_action()
         messagebox.showerror(title="错误", message=msg)
-
-
-# if __name__ == "__main__":
-#     root = tk.Tk()
-#     app = App(root)
-#     root.mainloop()
